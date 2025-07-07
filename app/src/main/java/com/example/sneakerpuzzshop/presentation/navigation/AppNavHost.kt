@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.presentation.navigation
 
-import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -13,8 +12,11 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
-import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
-import com.example.sneakerpuzzshop.utils.*
+import com.example.sneakerpuzzshop.utils.ROUTE_FORGET_PW
+import com.example.sneakerpuzzshop.utils.ROUTE_HOME
+import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ROUTE_SIGNUP
+import com.example.sneakerpuzzshop.utils.ROUTE_SPLASH
 
 @Composable
 fun AppNavHost(
@@ -22,8 +24,6 @@ fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     startDestination: String = ROUTE_SPLASH
 ) {
-
-    GlobalNavigation.navController = navController
 
     NavHost(
         modifier = modifier,
@@ -40,16 +40,11 @@ fun AppNavHost(
             SignupScreen(viewModel = hiltViewModel(), navController)
         }
         composable(ROUTE_HOME) {
-            HomeScreen(viewModel = hiltViewModel(), navController)
+            HomeScreen(navController)
         }
         composable(ROUTE_FORGET_PW) {
             ForgetPasswordScreen(viewModel = hiltViewModel(), navController)
         }
 
     }
-}
-
-object GlobalNavigation {
-    @SuppressLint("StaticFieldLeak")
-    lateinit var navController: NavHostController
 }

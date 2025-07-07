@@ -11,14 +11,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.example.sneakerpuzzshop.presentation.navigation.GlobalNavigation
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.utils.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
-import com.example.sneakerpuzzshop.utils.ROUTE_SPLASH
 
 @Composable
-fun ProfilePage( modifier: Modifier = Modifier, viewModel: AuthViewModel = hiltViewModel()) {
+fun ProfilePage(
+    modifier: Modifier = Modifier,
+    viewModel: AuthViewModel = hiltViewModel(),
+    navController: NavHostController
+) {
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -29,7 +32,6 @@ fun ProfilePage( modifier: Modifier = Modifier, viewModel: AuthViewModel = hiltV
         TextButton(
             onClick = {
                 viewModel.signOut()
-                val navController = GlobalNavigation.navController
                 navController.navigate(ROUTE_LOGIN) {
                     popUpTo(ROUTE_HOME) { inclusive = true }
                 }

@@ -18,15 +18,14 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.presentation.ui.pages.CartPage
 import com.example.sneakerpuzzshop.presentation.ui.pages.FavoritePage
 import com.example.sneakerpuzzshop.presentation.ui.pages.HomePage
 import com.example.sneakerpuzzshop.presentation.ui.pages.ProfilePage
-import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 
 @Composable
-fun HomeScreen(viewModel: AuthViewModel?, navController: NavController) {
+fun HomeScreen(navController: NavHostController) {
 
     val navItemList = listOf<NavItem>(
         NavItem("Home", Icons.Default.Home),
@@ -59,17 +58,17 @@ fun HomeScreen(viewModel: AuthViewModel?, navController: NavController) {
             }
         }
     ) {
-        ContentScreen(modifier = Modifier.padding(it), selectedIndex)
+        ContentScreen(modifier = Modifier.padding(it), selectedIndex, navController = navController)
     }
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier, index: Int) {
+fun ContentScreen(modifier: Modifier, index: Int, navController: NavHostController) {
     when(index) {
         0 -> HomePage(modifier)
         1 -> FavoritePage(modifier)
         2 -> CartPage(modifier)
-        3 -> ProfilePage(modifier)
+        3 -> ProfilePage(modifier, navController = navController)
     }
 }
 
