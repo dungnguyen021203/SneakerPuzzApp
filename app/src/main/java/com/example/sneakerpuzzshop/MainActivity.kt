@@ -20,8 +20,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<AuthViewModel>()
-
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("AUTH", "Current user: ${FirebaseAuth.getInstance().currentUser?.email}")
@@ -33,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 snackbarHost = { SnackbarHost(snackbarHostState) },
                 content = {
                     SneakerPuzzShopTheme {
-                        AppNavHost(viewModel)
+                        AppNavHost()
                     }
                 }
             )
