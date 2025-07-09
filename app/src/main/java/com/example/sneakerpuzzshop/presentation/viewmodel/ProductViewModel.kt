@@ -1,0 +1,32 @@
+package com.example.sneakerpuzzshop.presentation.viewmodel
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.domain.model.ProductModel
+import com.example.sneakerpuzzshop.domain.usecase.ProductUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class ProductViewModel @Inject constructor(
+    private val productUseCase: ProductUseCase
+): ViewModel() {
+    private val _product = MutableStateFlow<Resource<List<ProductModel>>>(Resource.Loading)
+    val product: StateFlow<Resource<List<ProductModel>>> = _product
+
+    fun loadProductsByCategory(categoryId: String) {
+        viewModelScope.launch {
+            try {
+                _product.value = Resource.Loading
+                val result = productUseCase(categoryId)
+                _product.value = Resource.Success(result)
+            } catch (e: Exception) {
+                _product.value = Resource.Failure(e)
+            }
+        }
+    }
+}
