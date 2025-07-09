@@ -11,7 +11,9 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.ForgetPasswordScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
+import com.example.sneakerpuzzshop.presentation.ui.pages.CategoryProductsPage
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
+import com.example.sneakerpuzzshop.utils.ROUTE_CATEGORY_PRODUCTS
 import com.example.sneakerpuzzshop.utils.ROUTE_FORGET_PW
 import com.example.sneakerpuzzshop.utils.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
@@ -45,6 +47,9 @@ fun AppNavHost(
         composable(ROUTE_FORGET_PW) {
             ForgetPasswordScreen(viewModel = hiltViewModel(), navController)
         }
-
+        composable("$ROUTE_CATEGORY_PRODUCTS{categoryId}") {
+            var categoryId = it.arguments?.getString("categoryId")
+            CategoryProductsPage(modifier, categoryId?:"", navController)
+        }
     }
 }

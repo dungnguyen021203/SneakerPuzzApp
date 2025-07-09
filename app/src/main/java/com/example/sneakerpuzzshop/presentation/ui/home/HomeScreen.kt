@@ -65,7 +65,7 @@ fun HomeScreen(navController: NavHostController) {
 @Composable
 fun ContentScreen(modifier: Modifier, index: Int, navController: NavHostController) {
     when(index) {
-        0 -> HomePage(modifier)
+        0 -> HomePage(modifier, navController = navController)
         1 -> FavoritePage(modifier)
         2 -> CartPage(modifier)
         3 -> ProfilePage(modifier, navController = navController)

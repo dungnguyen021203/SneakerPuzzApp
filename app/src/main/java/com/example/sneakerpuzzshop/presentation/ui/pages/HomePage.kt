@@ -8,12 +8,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.presentation.components.home.BannerView
 import com.example.sneakerpuzzshop.presentation.components.home.CategoryView
 import com.example.sneakerpuzzshop.presentation.components.home.HeaderView
 
 @Composable
-fun HomePage(modifier: Modifier = Modifier) {
+fun HomePage(modifier: Modifier = Modifier, navController: NavHostController) {
     Column(modifier = modifier.fillMaxSize().padding(16.dp)) {
         HeaderView(modifier)
 
@@ -21,7 +23,7 @@ fun HomePage(modifier: Modifier = Modifier) {
         // SearchBarItem()
 
         Spacer(modifier = Modifier.height(20.dp))
-        CategoryView(modifier)
+        CategoryView(modifier, navController = navController)
         BannerView(modifier = Modifier.height(200.dp))
     }
 }

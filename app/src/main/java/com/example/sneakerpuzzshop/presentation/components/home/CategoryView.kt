@@ -18,28 +18,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.CategoryModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
 
 @Composable
-fun CategoryView(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
+fun CategoryView(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel(), navController: NavHostController) {
     val categories by viewModel.categories.collectAsState()
 
     LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         items(categories) { item ->
-            CategoryItem(category = item)
+            CategoryItem(category = item, navController = navController)
         }
     }
 
 }
 
 @Composable
-fun CategoryItem(category: CategoryModel) {
+fun CategoryItem(category: CategoryModel, navController: NavHostController) {
     Card(
         modifier = Modifier
             .size(50.dp)
-            .clickable {},
+            .clickable {
+                navController.navigate("category_products/" + category.id)
+            },
         shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(1.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
