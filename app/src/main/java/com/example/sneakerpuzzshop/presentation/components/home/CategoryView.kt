@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.CategoryModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
+import com.example.sneakerpuzzshop.utils.ROUTE_CATEGORY_PRODUCTS
 
 @Composable
 fun CategoryView(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel(), navController: NavHostController) {
@@ -42,7 +42,7 @@ fun CategoryItem(category: CategoryModel, navController: NavHostController) {
         modifier = Modifier
             .size(50.dp)
             .clickable {
-                navController.navigate("category_products/" + category.id)
+                navController.navigate(ROUTE_CATEGORY_PRODUCTS + category.id)
             },
         shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(1.dp),
