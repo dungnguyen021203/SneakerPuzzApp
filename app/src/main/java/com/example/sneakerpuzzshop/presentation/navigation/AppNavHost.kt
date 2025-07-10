@@ -12,11 +12,13 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.pages.CategoryProductsPage
+import com.example.sneakerpuzzshop.presentation.ui.pages.ProductDetails
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
 import com.example.sneakerpuzzshop.utils.ROUTE_CATEGORY_PRODUCTS
 import com.example.sneakerpuzzshop.utils.ROUTE_FORGET_PW
 import com.example.sneakerpuzzshop.utils.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.ROUTE_SIGNUP
 import com.example.sneakerpuzzshop.utils.ROUTE_SPLASH
 
@@ -50,6 +52,10 @@ fun AppNavHost(
         composable("$ROUTE_CATEGORY_PRODUCTS{categoryId}") {
             var categoryId = it.arguments?.getString("categoryId")
             CategoryProductsPage(modifier, categoryId?:"", navController)
+        }
+        composable("$ROUTE_PRODUCTS_DETAILS{productId}") {
+            var productId = it.arguments?.getString("productId")
+            ProductDetails(modifier, productId?:"", navController)
         }
     }
 }

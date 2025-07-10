@@ -3,7 +3,6 @@ package com.example.sneakerpuzzshop.presentation.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -19,19 +18,24 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.ProductModel
+import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.formatCurrency
 
 @Composable
 fun ProductCard(
     modifier: Modifier = Modifier,
-    product: ProductModel
+    product: ProductModel,
+    navController: NavHostController
 ) {
     Card(
         modifier = modifier
             .padding(8.dp)
-            .clickable { },
+            .clickable {
+                navController.navigate("$ROUTE_PRODUCTS_DETAILS + ${product.id}")
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(8.dp)

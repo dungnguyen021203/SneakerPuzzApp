@@ -58,7 +58,7 @@ fun CategoryProductsPage(
                     items(productList.chunked(2)) { rowItems ->
                         Row {
                             rowItems.forEach {
-                                ProductCard(product = it, modifier = Modifier.weight(1f))
+                                ProductCard(product = it, modifier = Modifier.weight(1f), navController = navController)
                             }
                             if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
                         }
