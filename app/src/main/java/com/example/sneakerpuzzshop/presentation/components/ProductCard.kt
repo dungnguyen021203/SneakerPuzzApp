@@ -34,7 +34,7 @@ fun ProductCard(
         modifier = modifier
             .padding(8.dp)
             .clickable {
-                navController.navigate("$ROUTE_PRODUCTS_DETAILS + ${product.id}")
+                navController.navigate(ROUTE_PRODUCTS_DETAILS + product.id)
             },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
