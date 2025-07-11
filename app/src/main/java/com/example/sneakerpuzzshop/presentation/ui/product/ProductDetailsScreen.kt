@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,7 +30,11 @@ import com.example.sneakerpuzzshop.domain.model.ProductModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductDetailsScreen(product: ProductModel, navController: NavHostController) {
+fun ProductDetailsScreen(
+    product: ProductModel,
+    navController: NavHostController,
+    categoryImage: String?
+) {
 
     var firstPic by remember {
         mutableStateOf(product.images.firstOrNull())
@@ -89,7 +92,7 @@ fun ProductDetailsScreen(product: ProductModel, navController: NavHostController
                     .padding(start = 16.dp, end = 16.dp, top = 10.dp)
             ) {
                 item {
-                    ProductDetailsContent(product = product)
+                    ProductDetailsContent(product = product, categoryImage = categoryImage)
                 }
             }
         }

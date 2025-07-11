@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Verified
@@ -38,12 +37,17 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.utils.formatCurrency
 
 @Composable
-fun ProductDetailsContent(modifier: Modifier = Modifier, product: ProductModel) {
+fun ProductDetailsContent(
+    modifier: Modifier = Modifier,
+    product: ProductModel,
+    categoryImage: String?
+) {
     Surface(
         modifier = Modifier
             .fillMaxSize(),
@@ -151,7 +155,10 @@ fun ProductDetailsContent(modifier: Modifier = Modifier, product: ProductModel) 
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Image(painterResource(id = R.drawable.ic_google_logo), contentDescription = null)
+                AsyncImage(
+                    model = categoryImage,
+                    contentDescription = "Category"
+                )
                 Text(
                     text = product.category.replaceFirstChar { it.uppercase() },
                     fontSize = 16.sp,
@@ -176,15 +183,15 @@ fun ProductDetailsContent(modifier: Modifier = Modifier, product: ProductModel) 
                 fontWeight = FontWeight.SemiBold
             )
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                listOf(
-                    "EU 38",
-                    "EU 39",
-                    "EU 40",
-                    "EU 41",
-                    "EU 42",
-                    "EU 43",
-                    "EU 44"
-                ).chunked(3).forEach { rowSize ->
+                mapOf<String, Int>(
+                    "EU 38" to 10,
+                    "EU 39" to 11,
+                    "EU 40" to 1,
+                    "EU 41" to 0,
+                    "EU 42" to 9,
+                    "EU 43" to 10,
+                    "EU 44" to 11,
+                ).keys.chunked(3).forEach { rowSize ->
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()

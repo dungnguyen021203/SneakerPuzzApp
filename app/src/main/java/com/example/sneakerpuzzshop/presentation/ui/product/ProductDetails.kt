@@ -10,6 +10,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.showToast
+import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.ProductViewModel
 import com.example.sneakerpuzzshop.utils.LoadingCircle
 
@@ -18,7 +19,8 @@ fun ProductDetails(
     modifier: Modifier = Modifier,
     productId: String,
     navController: NavHostController,
-    viewModel: ProductViewModel = hiltViewModel()
+    viewModel: ProductViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     LaunchedEffect(productId) {
         viewModel.loadProductDetails(productId)
@@ -26,6 +28,7 @@ fun ProductDetails(
 
     val context = LocalContext.current
     val state by viewModel.productDetails.collectAsState()
+    val homeState by homeViewModel.categories.collectAsState()
 
     state.let {
         when (it) {
@@ -38,7 +41,9 @@ fun ProductDetails(
             is Resource.Loading -> LoadingCircle()
             is Resource.Success<*> -> {
                 val product = (state as Resource.Success).data
-                ProductDetailsScreen(product = product, navController = navController)
+                val category = homeState.find { it.id == product.category }
+
+                ProductDetailsScreen(product = product, categoryImage = category?.imageUrl, navController = navController)
             }
         }
     }
