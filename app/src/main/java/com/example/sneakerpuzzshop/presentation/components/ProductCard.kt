@@ -45,6 +45,8 @@ fun ProductCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color(0xFFF5F5F5))
             ) {
                 AsyncImage(
                     model = product.images.firstOrNull(),

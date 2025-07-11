@@ -17,7 +17,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Verified
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
@@ -52,7 +54,7 @@ fun ProductDetailsContent(
         modifier = Modifier
             .fillMaxSize(),
         shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp),
-        color = Color(0xFFF5F5F5)
+        color = Color.White
     ) {
         Column(
             modifier = Modifier
@@ -67,7 +69,7 @@ fun ProductDetailsContent(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        Icons.Default.Star,
+                        Icons.Default.StarRate,
                         contentDescription = null,
                         tint = Color.Yellow,
                         modifier = Modifier.size(20.dp)
@@ -182,30 +184,54 @@ fun ProductDetailsContent(
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold
             )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                mapOf<String, Int>(
-                    "EU 38" to 10,
-                    "EU 39" to 11,
-                    "EU 40" to 1,
-                    "EU 41" to 0,
-                    "EU 42" to 9,
-                    "EU 43" to 10,
-                    "EU 44" to 11,
-                ).keys.chunked(3).forEach { rowSize ->
+                product.sizes.keys.chunked(3).forEach { keysString ->
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        rowSize.forEach { size ->
-                            OutlinedButton(
-                                onClick = { /* TODO */ },
-                                shape = RoundedCornerShape(4.dp),
+                        keysString.forEach { size ->
+                            val stock = product.sizes[size] ?: 0
+                            val isAvailable = stock > 0
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(text = size)
+                                OutlinedButton(
+                                    onClick = {
+
+                                    },
+                                    enabled = isAvailable,
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.outlinedButtonColors(
+                                        containerColor = Color.White,
+                                        contentColor = if (isAvailable) Color.Black else Color.Gray,
+                                        disabledContainerColor = Color(0xFFE0E0E0),
+                                        disabledContentColor = Color.Gray
+                                    ),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(48.dp)
+                                ) {
+                                    Text(
+                                        text = "EU $size",
+                                        fontWeight = FontWeight.Medium,
+                                        fontSize = 14.sp
+                                    )
+                                }
+
+                                Text(
+                                    text = "$stock available",
+                                    fontSize = 12.sp,
+                                    color = if (isAvailable) Color.Gray else Color.Red
+                                )
                             }
+
                         }
-                        repeat(3 - rowSize.size) {
+                        repeat(3 - keysString.size) {
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
