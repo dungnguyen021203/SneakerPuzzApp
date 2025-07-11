@@ -11,8 +11,8 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.ForgetPasswordScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
-import com.example.sneakerpuzzshop.presentation.ui.pages.CategoryProductsPage
-import com.example.sneakerpuzzshop.presentation.ui.pages.ProductDetails
+import com.example.sneakerpuzzshop.presentation.ui.category.CategoryProductsPage
+import com.example.sneakerpuzzshop.presentation.ui.product.ProductDetails
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
 import com.example.sneakerpuzzshop.utils.ROUTE_CATEGORY_PRODUCTS
 import com.example.sneakerpuzzshop.utils.ROUTE_FORGET_PW

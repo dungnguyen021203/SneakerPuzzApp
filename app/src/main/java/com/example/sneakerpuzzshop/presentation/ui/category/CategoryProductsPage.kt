@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.presentation.ui.pages
+package com.example.sneakerpuzzshop.presentation.ui.category
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
