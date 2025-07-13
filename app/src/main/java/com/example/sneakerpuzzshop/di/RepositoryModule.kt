@@ -2,8 +2,10 @@ package com.example.sneakerpuzzshop.di
 
 import com.example.sneakerpuzzshop.data.repository.HomeRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.ProductRepositoryImpl
+import com.example.sneakerpuzzshop.data.repository.ReviewRepositoryImpl
 import com.example.sneakerpuzzshop.domain.repository.HomeRepository
 import com.example.sneakerpuzzshop.domain.repository.ProductRepository
+import com.example.sneakerpuzzshop.domain.repository.ReviewRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,4 +19,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindProductRepository(productRepositoryImpl: ProductRepositoryImpl): ProductRepository
+
+    @Binds
+    fun bindReviewRepository(reviewRepositoryImpl: ReviewRepositoryImpl): ReviewRepository
 }
