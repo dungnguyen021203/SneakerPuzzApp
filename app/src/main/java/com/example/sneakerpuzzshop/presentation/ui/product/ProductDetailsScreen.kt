@@ -92,7 +92,11 @@ fun ProductDetailsScreen(
                     .padding(start = 16.dp, end = 16.dp, top = 10.dp)
             ) {
                 item {
-                    ProductDetailsContent(product = product, categoryImage = categoryImage)
+                    ProductDetailsContent(
+                        product = product,
+                        categoryImage = categoryImage,
+                        navController = navController
+                    )
                 }
             }
         }

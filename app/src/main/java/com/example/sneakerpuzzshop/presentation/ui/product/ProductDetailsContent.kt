@@ -1,7 +1,7 @@
 package com.example.sneakerpuzzshop.presentation.ui.product
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +16,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarRate
 import androidx.compose.material.icons.filled.Verified
 import androidx.compose.material3.ButtonDefaults
@@ -30,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -39,16 +37,19 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
-import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.domain.model.ProductModel
+import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCTS_DETAILS
+import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCT_REVIEW
 import com.example.sneakerpuzzshop.utils.formatCurrency
 
 @Composable
 fun ProductDetailsContent(
     modifier: Modifier = Modifier,
     product: ProductModel,
-    categoryImage: String?
+    categoryImage: String?,
+    navController: NavHostController
 ) {
     Surface(
         modifier = Modifier
@@ -262,7 +263,12 @@ fun ProductDetailsContent(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = "Reviews: (199)", fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                Icon(Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null)
+                Icon(
+                    Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = null,
+                    modifier = Modifier.clickable {
+                        navController.navigate(ROUTE_PRODUCTS_DETAILS + product.id + ROUTE_PRODUCT_REVIEW)
+                    })
             }
         }
     }
