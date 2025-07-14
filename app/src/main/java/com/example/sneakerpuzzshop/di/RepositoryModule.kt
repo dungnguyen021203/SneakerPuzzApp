@@ -1,8 +1,10 @@
 package com.example.sneakerpuzzshop.di
 
+import com.example.sneakerpuzzshop.data.repository.CartRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.HomeRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.ProductRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.ReviewRepositoryImpl
+import com.example.sneakerpuzzshop.domain.repository.CartRepository
 import com.example.sneakerpuzzshop.domain.repository.HomeRepository
 import com.example.sneakerpuzzshop.domain.repository.ProductRepository
 import com.example.sneakerpuzzshop.domain.repository.ReviewRepository
@@ -22,4 +24,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindReviewRepository(reviewRepositoryImpl: ReviewRepositoryImpl): ReviewRepository
+
+    @Binds
+    fun bindCartRepository(cartRepositoryImpl: CartRepositoryImpl): CartRepository
 }
