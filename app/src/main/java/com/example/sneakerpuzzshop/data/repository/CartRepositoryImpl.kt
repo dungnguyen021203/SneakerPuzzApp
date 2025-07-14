@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.data.repository
 
-import android.util.Log
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.repository.CartRepository
 import com.example.sneakerpuzzshop.utils.await
@@ -14,8 +13,9 @@ class CartRepositoryImpl @Inject constructor(
         val snapshot = firestore.collection("users")
             .document(userId)
             .get().await()
-        val cart = snapshot.get("cart") as? List<Map<String, Any>> ?: return emptyList()
-        return cart.mapNotNull { map ->
+        val cart = snapshot.get("cart") as? List<*> ?: return emptyList()
+
+        return cart.filterIsInstance<Map<String, Any>>().mapNotNull { map ->
             try {
                 CartItemModel(
                     productId = map["productId"] as? String ?: "",
