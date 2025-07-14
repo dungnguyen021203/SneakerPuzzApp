@@ -19,8 +19,8 @@ class CartRepositoryImpl @Inject constructor(
             try {
                 CartItemModel(
                     productId = map["productId"] as? String ?: "",
-                    size = map["size"] as? Int ?: 0,
-                    quantity = map["quantity"] as? Int ?: 1
+                    size = (map["size"] as? Long)?.toInt() ?: 0,
+                    quantity = (map["quantity"] as? Long)?.toInt() ?: 1
                 )
             } catch (e: Exception) {
                 e.printStackTrace()
