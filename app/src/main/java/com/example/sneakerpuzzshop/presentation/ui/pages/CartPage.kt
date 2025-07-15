@@ -1,17 +1,23 @@
 package com.example.sneakerpuzzshop.presentation.ui.pages
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.showToast
@@ -47,10 +53,17 @@ fun CartPage(
             is Resource.Success -> {
                 val cartList = (state as Resource.Success).data
                 Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(WindowInsets.systemBars.asPaddingValues())
+                        .padding(10.dp)
                 ) {
+                    Text(
+                        text = "Your Cart",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+
                     LazyColumn {
                         items(cartList) { item ->
 
@@ -81,24 +94,3 @@ fun CartPage(
         }
     }
 }
-
-//@Composable
-//fun CartItemRow(
-//    item: CartItemModel,
-//    onAdd: () -> Unit,
-//    onRemove: () -> Unit,
-//    onDelete: () -> Unit
-//) {
-//    Row(Modifier
-//        .fillMaxWidth()
-//        .padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-//        Text("SP: ${item.productId} - Size ${item.size}")
-//        Spacer(modifier = Modifier.weight(1f))
-//        Row {
-//            IconButton(onClick = onRemove) { Text("-") }
-//            Text("${item.quantity}")
-//            IconButton(onClick = onAdd) { Text("+") }
-//            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null) }
-//        }
-//    }
-//}
