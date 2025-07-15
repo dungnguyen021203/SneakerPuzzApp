@@ -10,7 +10,7 @@ class GetCartFromUserUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(userId: String): Resource<List<CartItemModel>> {
         if (userId.isBlank()) {
-            Resource.Failure(Exception("User id không hợp lệ"))
+            return Resource.Failure(Exception("User id không hợp lệ"))
         }
         return try {
             val cartItems = cartRepository.getCartFromUser(userId)
