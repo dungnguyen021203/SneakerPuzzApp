@@ -4,8 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
+import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.domain.usecase.AddToCartUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetCartFromUserUseCase
+import com.example.sneakerpuzzshop.domain.usecase.ProductDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.RemoveFromCartUseCase
 import com.example.sneakerpuzzshop.domain.usecase.UpdateCartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,18 +21,33 @@ class CartViewModel @Inject constructor(
     private val getCartFromUserUseCase: GetCartFromUserUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
-    private val updateCartUseCase: UpdateCartUseCase
+    private val updateCartUseCase: UpdateCartUseCase,
+    private val productDetailsUseCase: ProductDetailsUseCase
 ) : ViewModel() {
 
     private val _cart = MutableStateFlow<Resource<List<CartItemModel>>>(Resource.Loading)
     val cart: StateFlow<Resource<List<CartItemModel>>> = _cart
 
+    private val _productDetailsMap = MutableStateFlow<Map<String, ProductModel>>(emptyMap())
+    val productDetailsMap: StateFlow<Map<String, ProductModel>> = _productDetailsMap
+
     fun getCartFromUser(userId: String) {
         viewModelScope.launch {
             try {
                 _cart.value = Resource.Loading
-                val result = getCartFromUserUseCase(userId)
-                _cart.value = result
+                val cartItem = getCartFromUserUseCase(userId)
+                _cart.value = cartItem
+
+                if (cartItem is Resource.Success) {
+                    val productMap = mutableMapOf<String, ProductModel>()
+                    for (item in cartItem.data) {
+                        val result = productDetailsUseCase(item.productId)
+                        if (result is Resource.Success) {
+                            productMap[item.productId] = result.data
+                        }
+                    }
+                    _productDetailsMap.value = productMap
+                }
             } catch (e: Exception) {
                 _cart.value = Resource.Failure(e)
             }

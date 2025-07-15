@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.presentation.ui.cart
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -19,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -30,17 +26,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.sneakerpuzzshop.R
+import coil.compose.AsyncImage
+import com.example.sneakerpuzzshop.domain.model.CartItemModel
+import com.example.sneakerpuzzshop.domain.model.ProductModel
+import com.example.sneakerpuzzshop.utils.formatCurrency
 
-@Preview(showBackground = true)
 @Composable
-fun CartItemRowPr() {
+fun CartItemRow(
+    item: CartItemModel,
+    onAdd: () -> Unit,
+    onRemove: () -> Unit,
+    onDelete: () -> Unit,
+    product: ProductModel?
+) {
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -56,8 +58,8 @@ fun CartItemRowPr() {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.giay_nike_air_zoom_structure_25_nam_den_trang_01),
+            AsyncImage(
+                model = product?.images?.firstOrNull(),
                 contentDescription = "Shoe Image",
                 modifier = Modifier
                     .size(120.dp)
@@ -70,19 +72,19 @@ fun CartItemRowPr() {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "Nike Dunk Low Retro SE",
+                    text = "${product?.name}",
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "Size: 38",
+                    text = "Size: ${item.size}",
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
                 Text(
-                    text = "Price: 2.490.000₫",
+                    text = formatCurrency(product?.actualPrice),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
@@ -93,31 +95,29 @@ fun CartItemRowPr() {
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Button(
-                        onClick = { /* Giảm số lượng */ },
+                        onClick = onRemove,
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(0.dp),
                         modifier = Modifier.size(24.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black
-                        )
-                        , elevation = ButtonDefaults.buttonElevation(8.dp)
+                        ), elevation = ButtonDefaults.buttonElevation(8.dp)
                     ) {
                         Text("-", fontSize = 18.sp, fontWeight = FontWeight.Normal)
                     }
 
-                    Text("1", fontSize = 14.sp)
+                    Text("${item.quantity}", fontSize = 14.sp)
 
                     Button(
-                        onClick = { /* Tăng số lượng */ },
+                        onClick = onAdd,
                         shape = RoundedCornerShape(8.dp),
                         contentPadding = PaddingValues(0.dp),
                         modifier = Modifier.size(24.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black
-                        )
-                        , elevation = ButtonDefaults.buttonElevation(8.dp)
+                        ), elevation = ButtonDefaults.buttonElevation(8.dp)
                     ) {
                         Text("+", fontSize = 18.sp, fontWeight = FontWeight.Normal)
                     }
@@ -125,7 +125,7 @@ fun CartItemRowPr() {
             }
 
             IconButton(
-                onClick = { /* Xóa sản phẩm */ },
+                onClick = onDelete,
                 modifier = Modifier.size(32.dp)
             ) {
                 Icon(
