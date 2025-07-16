@@ -88,7 +88,6 @@ fun ProductDetailsBottomBar(
                     enabled = selectedSize != null && quantity < stock
                 ) {
                     Icon(Icons.Default.AddCircle, contentDescription = "Increase")
-                    Log.d("AddToCart", "User: $userId - Size: $selectedSize - Quantity: $quantity")
                 }
             }
 

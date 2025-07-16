@@ -97,6 +97,11 @@ class CartViewModel @Inject constructor(
     fun updateCart(userId: String, productId: String, size: Int, quantity: Int) {
         viewModelScope.launch {
             try {
+                if (quantity <= 0) {
+                    removeFromCart(userId, productId, size)
+                    return@launch
+                }
+
                 val result = updateCartUseCase(userId, productId, size, quantity)
                 if (result is Resource.Success) {
                     val currentCart = (_cart.value as? Resource.Success)?.data?.toMutableList() ?: return@launch

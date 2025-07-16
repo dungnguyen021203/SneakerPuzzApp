@@ -117,7 +117,8 @@ fun CartItemRow(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black
-                        ), elevation = ButtonDefaults.buttonElevation(8.dp)
+                        ), elevation = ButtonDefaults.buttonElevation(8.dp),
+                        enabled = item.quantity < (product?.sizes?.get(item.size.toString()) ?: 0)
                     ) {
                         Text("+", fontSize = 18.sp, fontWeight = FontWeight.Normal)
                     }
