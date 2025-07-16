@@ -31,6 +31,7 @@ import com.example.sneakerpuzzshop.domain.model.ProductModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailsScreen(
+    userId: String,
     product: ProductModel,
     navController: NavHostController,
     categoryImage: String?
@@ -39,10 +40,19 @@ fun ProductDetailsScreen(
     var firstPic by remember {
         mutableStateOf(product.images.firstOrNull())
     }
+    var selectedSize by remember { mutableStateOf<String?>(null) }
+    var quantity by remember { mutableStateOf(1) }
+    val stock = selectedSize?.let { product.sizes[it] ?: 0 } ?: 0
 
     Scaffold(
         bottomBar = {
-            ProductDetailsBottomBar()
+            ProductDetailsBottomBar(
+                userId = userId,
+                stock = stock,
+                quantity = quantity,
+                onQuantityChange = { quantity = it },
+                selectedSize = selectedSize
+            )
         }
     ) { innerPadding ->
         Column(
@@ -95,7 +105,12 @@ fun ProductDetailsScreen(
                     ProductDetailsContent(
                         product = product,
                         categoryImage = categoryImage,
-                        navController = navController
+                        navController = navController,
+                        selectedSize = selectedSize,
+                        onSizeSelected = { size ->
+                            selectedSize = if (size.isNotEmpty()) size else null
+                            quantity = 1
+                        }
                     )
                 }
             }

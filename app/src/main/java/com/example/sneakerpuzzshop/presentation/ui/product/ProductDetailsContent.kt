@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.ui.product
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -49,7 +50,9 @@ fun ProductDetailsContent(
     modifier: Modifier = Modifier,
     product: ProductModel,
     categoryImage: String?,
-    navController: NavHostController
+    navController: NavHostController,
+    selectedSize: String?,
+    onSizeSelected: (String) -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -201,18 +204,30 @@ fun ProductDetailsContent(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.weight(1f)
                             ) {
+                                val isSelected = selectedSize == size
                                 OutlinedButton(
                                     onClick = {
-
+                                        if (isSelected) onSizeSelected("") else onSizeSelected(size)
                                     },
-                                    enabled = isAvailable,
+                                    enabled = isAvailable && (selectedSize == null || isSelected),
                                     shape = RoundedCornerShape(12.dp),
                                     colors = ButtonDefaults.outlinedButtonColors(
-                                        containerColor = Color.White,
-                                        contentColor = if (isAvailable) Color.Black else Color.Gray,
-                                        disabledContainerColor = Color(0xFFE0E0E0),
-                                        disabledContentColor = Color.Gray
+                                        containerColor = when {
+                                            !isAvailable -> Color(0xFFE0E0E0)
+                                            isSelected -> Color.Black
+                                            else -> Color.White
+                                        },
+                                        contentColor = when {
+                                            !isAvailable -> Color.Gray
+                                            isSelected -> Color.White
+                                            else -> Color.Black
+                                        }
                                     ),
+                                    border = when {
+                                        !isAvailable -> BorderStroke(1.dp, Color.LightGray)
+                                        isSelected -> null
+                                        else -> BorderStroke(1.dp, Color.Black)
+                                    },
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(48.dp)

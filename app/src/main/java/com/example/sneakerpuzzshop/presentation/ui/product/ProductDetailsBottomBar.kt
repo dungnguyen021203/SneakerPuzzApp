@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.ui.product
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -27,7 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun ProductDetailsBottomBar() {
+fun ProductDetailsBottomBar(
+    userId: String,
+    stock: Int,
+    quantity: Int,
+    onQuantityChange: (Int) -> Unit,
+    selectedSize: String?
+) {
     Surface(
         modifier = Modifier
             .fillMaxWidth().navigationBarsPadding(),
@@ -45,21 +52,37 @@ fun ProductDetailsBottomBar() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                IconButton(onClick = { /* decrease */ }) {
+                IconButton(
+                    onClick = {
+                        if (quantity > 1) onQuantityChange(quantity - 1)
+                    },
+                    enabled = selectedSize != null && quantity > 1
+                ) {
                     Icon(Icons.Default.RemoveCircle, contentDescription = "Decrease")
                 }
-                Text(text = "1", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                IconButton(onClick = { /* increase */ }) {
+
+                Text(text = "$quantity", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+
+                IconButton(
+                    onClick = {
+                        if (quantity < stock) onQuantityChange(quantity + 1)
+                    },
+                    enabled = selectedSize != null && quantity < stock
+                ) {
                     Icon(Icons.Default.AddCircle, contentDescription = "Increase")
+                    Log.d("AddToCart", "User: $userId - Size: $selectedSize - Quantity: $quantity")
                 }
             }
 
             // Add to Bag Button
             Button(
                 onClick = { /* Add to Bag */ },
+                enabled = selectedSize != null,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
-                    contentColor = Color.White
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.Gray,
+                    disabledContentColor = Color.White
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
