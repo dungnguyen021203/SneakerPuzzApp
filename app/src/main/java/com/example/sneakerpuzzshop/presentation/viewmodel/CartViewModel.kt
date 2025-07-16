@@ -56,11 +56,20 @@ class CartViewModel @Inject constructor(
 
     fun addToCart(userId: String, item: CartItemModel) {
         viewModelScope.launch {
-            val result = addToCartUseCase(userId, item)
-            when (result) {
-                is Resource.Failure -> TODO()
-                is Resource.Loading -> TODO()
-                is Resource.Success<*> -> getCartFromUser(userId)
+            try {
+                val result = addToCartUseCase(userId, item)
+                if (result is Resource.Success) {
+                    val currentCart = (_cart.value as? Resource.Success)?.data?.toMutableList() ?: return@launch
+                    val index = currentCart.indexOfFirst { it.productId == item.productId && it.size == item.size }
+                    if (index >= 0) {
+                        currentCart[index] = currentCart[index].copy(quantity = currentCart[index].quantity + item.quantity)
+                    } else {
+                        currentCart.add(item)
+                    }
+                    _cart.value = Resource.Success(currentCart)
+                }
+            } catch (e: Exception) {
+                _cart.value = Resource.Failure(e)
             }
         }
     }
@@ -71,28 +80,36 @@ class CartViewModel @Inject constructor(
         size: Int
     ) {
         viewModelScope.launch {
-            val result = removeFromCartUseCase(userId, productId, size)
-            when (result) {
-                is Resource.Failure -> TODO()
-                is Resource.Loading -> TODO()
-                is Resource.Success<*> -> getCartFromUser(userId)
+            try {
+                val result = removeFromCartUseCase(userId, productId, size)
+                if (result is Resource.Success) {
+                    val currentCart = (_cart.value as? Resource.Success)?.data?.toMutableList() ?: return@launch
+                    val updated = currentCart.filterNot { it.productId == productId && it.size == size }
+                    _cart.value = Resource.Success(updated)
+                }
+            } catch (e: Exception) {
+                _cart.value = Resource.Failure(e)
+            }
+
+        }
+    }
+
+    fun updateCart(userId: String, productId: String, size: Int, quantity: Int) {
+        viewModelScope.launch {
+            try {
+                val result = updateCartUseCase(userId, productId, size, quantity)
+                if (result is Resource.Success) {
+                    val currentCart = (_cart.value as? Resource.Success)?.data?.toMutableList() ?: return@launch
+                    val index = currentCart.indexOfFirst { it.productId == productId && it.size == size }
+                    if (index >= 0) {
+                        currentCart[index] = currentCart[index].copy(quantity = quantity)
+                        _cart.value = Resource.Success(currentCart)
+                    }
+                }
+            } catch (e: Exception) {
+                _cart.value = Resource.Failure(e)
             }
         }
     }
 
-    fun updateCart(
-        userId: String,
-        productId: String,
-        size: Int,
-        quantity: Int
-    ) {
-        viewModelScope.launch {
-            val result = updateCartUseCase(userId, productId, size, quantity)
-            when (result) {
-                is Resource.Failure -> TODO()
-                is Resource.Loading -> TODO()
-                is Resource.Success<*> -> getCartFromUser(userId)
-            }
-        }
-    }
 }
