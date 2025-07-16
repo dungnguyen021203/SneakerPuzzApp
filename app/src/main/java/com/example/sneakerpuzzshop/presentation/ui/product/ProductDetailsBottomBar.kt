@@ -13,31 +13,49 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.example.sneakerpuzzshop.domain.model.CartItemModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductDetailsBottomBar(
     userId: String,
     stock: Int,
     quantity: Int,
+    productId: String,
     onQuantityChange: (Int) -> Unit,
-    selectedSize: String?
+    selectedSize: String?,
+    cartViewModel: CartViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
+    var isShowDialog by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier
-            .fillMaxWidth().navigationBarsPadding(),
+            .fillMaxWidth()
+            .navigationBarsPadding(),
         color = Color.White
     ) {
         Row(
@@ -76,7 +94,15 @@ fun ProductDetailsBottomBar(
 
             // Add to Bag Button
             Button(
-                onClick = { /* Add to Bag */ },
+                onClick = {
+                    cartViewModel.addToCart(
+                        userId, CartItemModel(
+                            productId,
+                            selectedSize?.toInt() ?: 0, quantity
+                        )
+                    )
+                    isShowDialog = true
+                },
                 enabled = selectedSize != null,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.Black,
@@ -89,6 +115,26 @@ fun ProductDetailsBottomBar(
                 Icon(Icons.Default.ShoppingBag, contentDescription = "Add to Bag")
                 Spacer(modifier = Modifier.width(8.dp))
                 Text("Add to Bag")
+            }
+
+            if (isShowDialog == true) {
+                AlertDialog(
+                    onDismissRequest = { isShowDialog == false },
+                    title = {Text(text = "Added to Cart")},
+                    text = {
+                        Text(text = "Product has been added to your cart successfully")
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                isShowDialog = false
+                                navController.popBackStack()
+                            }
+                        ) {
+                            Text("Continue to shop")
+                        }
+                    }
+                )
             }
         }
     }

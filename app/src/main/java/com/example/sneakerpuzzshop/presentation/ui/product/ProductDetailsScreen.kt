@@ -50,8 +50,10 @@ fun ProductDetailsScreen(
                 userId = userId,
                 stock = stock,
                 quantity = quantity,
+                productId = product.id,
                 onQuantityChange = { quantity = it },
-                selectedSize = selectedSize
+                selectedSize = selectedSize,
+                navController = navController
             )
         }
     ) { innerPadding ->
