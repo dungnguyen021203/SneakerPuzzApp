@@ -1,36 +1,51 @@
 package com.example.sneakerpuzzshop.presentation.ui.pages
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.ui.cart.CartItemRow
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
 import com.example.sneakerpuzzshop.utils.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ROUTE_CHECKOUT
 
 @Composable
 fun CartPage(
     modifier: Modifier = Modifier,
     viewModel: CartViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    navController: NavHostController
 ) {
     val userId = authViewModel.currentUser?.uid.toString()
     val context = LocalContext.current
@@ -52,6 +67,7 @@ fun CartPage(
             is Resource.Loading -> LoadingCircle()
             is Resource.Success -> {
                 val cartList = (state as Resource.Success).data
+                var isEmpty = cartList.isEmpty()
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -64,30 +80,77 @@ fun CartPage(
                         fontWeight = FontWeight.Bold
                     )
 
-                    LazyColumn {
-                        items(cartList) { item ->
+                    if (isEmpty) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 100.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Top
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingBag,
+                                contentDescription = "Empty Cart",
+                                tint = Color.LightGray,
+                                modifier = Modifier.size(100.dp),
+                            )
+                            Text(
+                                text = "Your Cart is Empty",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(top = 16.dp)
+                            )
+                            Text(
+                                text = "Looks like you haven’t added anything to your cart yet.",
+                                fontSize = 16.sp,
+                                color = Color.Gray,
+                                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp),
+                                lineHeight = 20.sp
+                            )
+                        }
+                    } else {
+                        LazyColumn {
+                            items(cartList) { item ->
 
-                            val product = productMap[item.productId]
+                                val product = productMap[item.productId]
 
-                            CartItemRow(item = item, onAdd = {
-                                viewModel.updateCart(
-                                    userId,
-                                    item.productId,
-                                    item.size,
-                                    item.quantity + 1
-                                )
-                            }, onRemove = {
-                                viewModel.updateCart(
-                                    userId,
-                                    item.productId,
-                                    item.size,
-                                    item.quantity - 1
-                                )
-                            }, onDelete = {
-                                viewModel.removeFromCart(userId, item.productId, item.size)
-                            }, product = product)
+                                CartItemRow(item = item, onAdd = {
+                                    viewModel.updateCart(
+                                        userId,
+                                        item.productId,
+                                        item.size,
+                                        item.quantity + 1
+                                    )
+                                }, onRemove = {
+                                    viewModel.updateCart(
+                                        userId,
+                                        item.productId,
+                                        item.size,
+                                        item.quantity - 1
+                                    )
+                                }, onDelete = {
+                                    viewModel.removeFromCart(userId, item.productId, item.size)
+                                }, product = product)
+                            }
                         }
                     }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Button(
+                            onClick = { navController.navigate(ROUTE_CHECKOUT) },
+                            enabled = !isEmpty,
+                            modifier = Modifier
+                                .height(70.dp)
+                                .width(150.dp)
+                                .padding(top = 16.dp)
+                        ) {
+                            Text(text = "Check Out", fontSize = 16.sp)
+                        }
+                    }
+
                 }
 
             }
