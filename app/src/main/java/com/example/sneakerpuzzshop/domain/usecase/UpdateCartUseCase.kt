@@ -10,7 +10,7 @@ class UpdateCartUseCase @Inject constructor(
     suspend operator fun invoke(
         userId: String,
         productId: String,
-        size: Int,
+        size: String,
         quantity: Int
     ): Resource<Unit> {
         return try {

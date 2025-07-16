@@ -10,7 +10,7 @@ class RemoveFromCartUseCase @Inject constructor(
     suspend operator fun invoke(
         userId: String,
         productId: String,
-        size: Int
+        size: String
     ): Resource<Unit> {
         return try {
             cartRepository.removeFromCart(userId, productId, size)

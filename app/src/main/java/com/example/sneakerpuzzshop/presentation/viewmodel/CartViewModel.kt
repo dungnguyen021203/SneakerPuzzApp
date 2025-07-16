@@ -77,7 +77,7 @@ class CartViewModel @Inject constructor(
     fun removeFromCart(
         userId: String,
         productId: String,
-        size: Int
+        size: String
     ) {
         viewModelScope.launch {
             try {
@@ -94,7 +94,7 @@ class CartViewModel @Inject constructor(
         }
     }
 
-    fun updateCart(userId: String, productId: String, size: Int, quantity: Int) {
+    fun updateCart(userId: String, productId: String, size: String, quantity: Int) {
         viewModelScope.launch {
             try {
                 if (quantity <= 0) {

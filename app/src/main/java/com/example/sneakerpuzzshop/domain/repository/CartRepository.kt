@@ -7,7 +7,7 @@ interface CartRepository {
 
     suspend fun addToCart(userId: String, item: CartItemModel)
 
-    suspend fun removeFromCart(userId: String, productId: String, size: Int)
+    suspend fun removeFromCart(userId: String, productId: String, size: String)
 
-    suspend fun updateCart(userId: String, productId: String, size: Int, quantity: Int)
+    suspend fun updateCart(userId: String, productId: String, size: String, quantity: Int)
 }

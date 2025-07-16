@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.presentation.ui.product
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +13,6 @@ import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -97,7 +95,7 @@ fun ProductDetailsBottomBar(
                     cartViewModel.addToCart(
                         userId, CartItemModel(
                             productId,
-                            selectedSize?.toInt() ?: 0, quantity
+                            selectedSize ?: "", quantity
                         )
                     )
                     isShowDialog = true

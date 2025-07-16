@@ -19,7 +19,7 @@ class CartRepositoryImpl @Inject constructor(
             try {
                 CartItemModel(
                     productId = map["productId"] as? String ?: "",
-                    size = (map["size"] as? Long)?.toInt() ?: 0,
+                    size = map["size"] as? String ?: "",
                     quantity = (map["quantity"] as? Long)?.toInt() ?: 1
                 )
             } catch (e: Exception) {
@@ -51,7 +51,7 @@ class CartRepositoryImpl @Inject constructor(
     override suspend fun removeFromCart(
         userId: String,
         productId: String,
-        size: Int
+        size: String
     ) {
         val currentCart = getCartFromUser(userId).filterNot { it.productId == productId && it.size == size }
         firestore.collection("users").document(userId).update("cart", currentCart).await()
@@ -60,7 +60,7 @@ class CartRepositoryImpl @Inject constructor(
     override suspend fun updateCart(
         userId: String,
         productId: String,
-        size: Int,
+        size: String,
         quantity: Int
     ) {
         val currentCart = getCartFromUser(userId).map {
