@@ -28,7 +28,8 @@ import com.example.sneakerpuzzshop.utils.formatCurrency
 fun ProductCard(
     modifier: Modifier = Modifier,
     product: ProductModel,
-    navController: NavHostController
+    navController: NavHostController,
+    categoryImage: String?
 ) {
     Card(
         modifier = modifier
@@ -123,15 +124,13 @@ fun ProductCard(
                     modifier = Modifier
                         .size(28.dp)
                         .align(Alignment.BottomEnd)
-                        .clip(RoundedCornerShape(6.dp))
-                        .background(Color.Black)
-                        .clickable { },
+                        .clip(RoundedCornerShape(6.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "+",
-                        color = Color.White,
-                        fontSize = 20.sp,
+                    AsyncImage(
+                        model = categoryImage,
+                        contentDescription = "Category Image",
+                        modifier = Modifier.background(Color(0xFFF5F5F5))
                     )
                 }
             }

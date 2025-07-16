@@ -22,6 +22,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.presentation.components.ProductCard
 import com.example.sneakerpuzzshop.presentation.components.showToast
+import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.ProductViewModel
 import com.example.sneakerpuzzshop.utils.LoadingCircle
 
@@ -30,7 +31,8 @@ fun CategoryProductsPage(
     modifier: Modifier = Modifier,
     categoryId: String,
     navController: NavHostController,
-    viewModel: ProductViewModel = hiltViewModel()
+    viewModel: ProductViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     LaunchedEffect(categoryId) {
         viewModel.loadProductsByCategory(categoryId)
@@ -38,6 +40,7 @@ fun CategoryProductsPage(
 
     val context = LocalContext.current
     val state by viewModel.product.collectAsState()
+    val homeState by homeViewModel.categories.collectAsState()
 
     state.let {
         when(it) {
@@ -57,8 +60,9 @@ fun CategoryProductsPage(
                 ).padding(10.dp)) {
                     items(productList.chunked(2)) { rowItems ->
                         Row {
-                            rowItems.forEach {
-                                ProductCard(product = it, modifier = Modifier.weight(1f), navController = navController)
+                            rowItems.forEach { product ->
+                                val category = homeState.find { it.id == product.category}
+                                ProductCard(product = product, categoryImage = category?.imageUrl, modifier = Modifier.weight(1f), navController = navController)
                             }
                             if (rowItems.size == 1) Spacer(modifier = Modifier.weight(1f))
                         }
