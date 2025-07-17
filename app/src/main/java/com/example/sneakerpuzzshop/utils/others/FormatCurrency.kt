@@ -12,3 +12,12 @@ fun formatCurrency(amount: String?): String {
         "0 đ"
     }
 }
+
+fun formatCurrency(amount: Double?): String {
+    return try {
+        val formatter = NumberFormat.getCurrencyInstance(Locale("vi", "VN"))
+        formatter.format(amount ?: 0.0)
+    } catch (e: Exception) {
+        "0 đ"
+    }
+}

@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.ui.pages
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,6 +40,8 @@ import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutBottom
 import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutProductCard
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
+import com.example.sneakerpuzzshop.utils.others.BillingHelper
+import com.example.sneakerpuzzshop.utils.others.formatCurrency
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @Composable
@@ -74,6 +78,10 @@ fun CheckoutPage(
 
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
+
+                val billingState = remember(cartList, productMap) {
+                    BillingHelper.calculate(cartList, productMap)
+                }
 
                 LazyColumn(
                     modifier = Modifier
@@ -147,7 +155,8 @@ fun CheckoutPage(
                         CheckoutBottom(
                             userName = user?.name,
                             userPhoneNumber = user?.phoneNumber,
-                            userAddress = user?.address
+                            userAddress = user?.address,
+                            billingResult = billingState
                         )
                     }
 
@@ -166,7 +175,7 @@ fun CheckoutPage(
                                 contentColor = Color.White
                             )
                         ) {
-                            Text(text = "Checkout $1615.4")
+                            Text(text = "Checkout ${formatCurrency(billingState.total)}")
                         }
                     }
                 }

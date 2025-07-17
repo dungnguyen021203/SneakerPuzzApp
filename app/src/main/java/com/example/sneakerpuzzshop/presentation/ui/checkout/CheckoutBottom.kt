@@ -1,6 +1,7 @@
 package com.example.sneakerpuzzshop.presentation.ui.checkout
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +14,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,9 +35,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.sneakerpuzzshop.R
+import com.example.sneakerpuzzshop.utils.others.BillingResult
+import com.example.sneakerpuzzshop.utils.others.formatCurrency
 
 @Composable
-fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: String?) {
+fun CheckoutBottom(
+    userName: String?,
+    userPhoneNumber: String?,
+    userAddress: String?,
+    billingResult: BillingResult
+) {
+    var isShowDialog by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -49,7 +65,7 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Subtotal", fontSize = 14.sp)
-                Text(text = "$14.24", fontSize = 14.sp) /////////////////////////////////////
+                Text(text = formatCurrency(billingResult.subtotal), fontSize = 14.sp)
             }
             Row(
                 modifier = Modifier
@@ -58,7 +74,7 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Shipping fee", fontSize = 14.sp)
-                Text(text = "$5", fontSize = 12.sp)
+                Text(text = formatCurrency(billingResult.shipping), fontSize = 12.sp)
             }
             Row(
                 modifier = Modifier
@@ -66,8 +82,8 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(text = "Shipping tax", fontSize = 14.sp)
-                Text(text = "$2", fontSize = 12.sp)
+                Text(text = "VAT 10%", fontSize = 14.sp)
+                Text(text = formatCurrency(billingResult.tax) , fontSize = 12.sp)
             }
             Row(
                 modifier = Modifier
@@ -76,7 +92,7 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Order Total", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                Text(text = "$200", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)  //////////////////////////////
+                Text(text = formatCurrency(billingResult.total), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             }
             HorizontalDivider()
             Spacer(modifier = Modifier.height(5.dp))
@@ -87,7 +103,7 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Payment Method", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Change", fontSize = 14.sp, color = Color.LightGray) ////////////////////////////
+                Text(text = "Change", fontSize = 14.sp, color = Color.LightGray, modifier = Modifier.clickable{isShowDialog = true})
             }
             Row(
                 modifier = Modifier
@@ -155,6 +171,24 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: Str
                 }
             }
 
+        }
+        if (isShowDialog == true) {
+            AlertDialog(
+                onDismissRequest = { isShowDialog == false },
+                title = {Text(text = "Feature not available right now")},
+                text = {
+                    Text(text = "You can only pay with ZaloPay. Sorry for inconvenient")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            isShowDialog = false
+                        }
+                    ) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }
