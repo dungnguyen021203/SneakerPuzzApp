@@ -78,9 +78,31 @@ fun CheckoutPage(
 
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
+                val showEmptyCartDialog = remember(cartList) { cartList.isEmpty() }
 
                 val billingState = remember(cartList, productMap) {
                     BillingHelper.calculate(cartList, productMap)
+                }
+
+                if (showEmptyCartDialog) {
+                    androidx.compose.material3.AlertDialog(
+                        onDismissRequest = {  },
+                        title = {
+                            Text(text = "Empty Cart", fontSize = 18.sp)
+                        },
+                        text = {
+                            Text("You have no items in your cart. Please add items to continue checkout.")
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    navController.popBackStack()
+                                }
+                            ) {
+                                Text("Back to Cart")
+                            }
+                        }
+                    )
                 }
 
                 LazyColumn(
