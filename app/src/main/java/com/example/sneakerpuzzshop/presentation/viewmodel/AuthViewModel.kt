@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
 import com.example.sneakerpuzzshop.domain.usecase.ForgetPasswordUseCase
+import com.example.sneakerpuzzshop.domain.usecase.GetUserInformationUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.LoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.SignupUseCase
@@ -25,7 +27,8 @@ class AuthViewModel @Inject constructor(
     private val googleLoginUseCase: GoogleLoginUseCase,
     private val googleSignInHelper: GoogleSignInHelper,
     private val authRepository: AuthRepository,
-    private val forgetPasswordUseCase: ForgetPasswordUseCase
+    private val forgetPasswordUseCase: ForgetPasswordUseCase,
+    private val getUserInformationUseCase: GetUserInformationUseCase
 ) : ViewModel() {
 
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -40,8 +43,22 @@ class AuthViewModel @Inject constructor(
     private val _resetPasswordFlow = MutableStateFlow<Resource<Unit>?>(null)
     val resetPasswordFlow: StateFlow<Resource<Unit>?> = _resetPasswordFlow.asStateFlow()
 
+    private val _userInformation = MutableStateFlow<Resource<UserModel>>(Resource.Loading)
+    val userInformation: StateFlow<Resource<UserModel>> = _userInformation
+
     val currentUser: FirebaseUser?
         get() = authRepository.currentUser
+
+    fun getUserInformation() {
+        viewModelScope.launch {
+            try {
+                val result = getUserInformationUseCase()
+                _userInformation.value = result
+            } catch (e: Exception) {
+                _userInformation.value = Resource.Failure(e)
+            }
+        }
+    }
 
     fun login(email: String, password: String) = viewModelScope.launch {
         _loginFlow.value = Resource.Loading

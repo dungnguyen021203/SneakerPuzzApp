@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import com.example.sneakerpuzzshop.R
 
 @Composable
-fun CheckoutBottom(userName: String?, userPhoneNumber: String?) {
+fun CheckoutBottom(userName: String?, userPhoneNumber: String?, userAddress: String?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -149,7 +149,7 @@ fun CheckoutBottom(userName: String?, userPhoneNumber: String?) {
                         tint = Color.LightGray
                     )
                     Text(
-                        text = "82536 Timmy Coves, South Liana, Maine 87356, USA",  ///////////////////////////
+                        text = "$userAddress",
                         fontSize = 14.sp
                     )
                 }

@@ -1,6 +1,7 @@
 package com.example.sneakerpuzzshop.domain.repository
 
 import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.google.firebase.auth.FirebaseUser
 
 interface AuthRepository {
@@ -15,4 +16,6 @@ interface AuthRepository {
     fun logOut()
 
     suspend fun resetPassword(email: String): Resource<Unit>
+
+    suspend fun getUserInformation(): Resource<UserModel>
 }

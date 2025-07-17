@@ -1,12 +1,15 @@
 package com.example.sneakerpuzzshop.data.repository
 
 import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
 import com.example.sneakerpuzzshop.utils.await
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.firestore
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -64,6 +67,26 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             firebaseAuth.sendPasswordResetEmail(email).await()
             Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun getUserInformation(): Resource<UserModel> {
+        return try {
+            val uid = firebaseAuth.currentUser?.uid
+                ?: return Resource.Failure(Exception("No authenticated user"))
+
+            val snapshot = Firebase.firestore.collection("users")
+                .document(uid)
+                .get()
+                .await()
+
+            val user = snapshot.toObject(UserModel::class.java)
+                ?: return Resource.Failure(Exception("User data not found"))
+
+            Resource.Success(user)
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Failure(e)
