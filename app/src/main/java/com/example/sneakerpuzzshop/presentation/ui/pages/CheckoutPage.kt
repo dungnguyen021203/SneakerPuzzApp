@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.presentation.ui.pages
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,11 +24,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +60,12 @@ fun CheckoutPage(
 
     val context = LocalContext.current
 
+    var promoCode by remember { mutableStateOf("") }
+    var shippingFeeOverride by remember { mutableStateOf<Double?>(null) }
+
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     LaunchedEffect(userId) {
         cartViewModel.getCartFromUser(userId)
         authViewModel.getUserInformation()
@@ -80,8 +89,8 @@ fun CheckoutPage(
                 val cartList = (cartState as Resource.Success).data
                 val showEmptyCartDialog = remember(cartList) { cartList.isEmpty() }
 
-                val billingState = remember(cartList, productMap) {
-                    BillingHelper.calculate(cartList, productMap)
+                val billingState = remember(cartList, productMap, shippingFeeOverride) {
+                    BillingHelper.calculate(cartList, productMap, shippingFeeOverride)
                 }
 
                 if (showEmptyCartDialog) {
@@ -133,8 +142,8 @@ fun CheckoutPage(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             TextField(
-                                value = "",
-                                onValueChange = { /* TODO */ },
+                                value = promoCode,
+                                onValueChange = { promoCode = it },
                                 placeholder = {
                                     Text(
                                         text = "Have a promo code? Enter here",
@@ -157,14 +166,24 @@ fun CheckoutPage(
                             )
 
                             Button(
-                                onClick = { /* Apply promo code */ },
+                                onClick = {
+                                    if (promoCode.trim().equals("FREESHIPPING", ignoreCase = true)) {
+                                        shippingFeeOverride = 0.0
+                                        showToast(context = context, message = "Coupon applied successfully")
+                                    } else {
+                                        showToast(context = context, message = "Invalid coupon")
+                                    }
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                },
+                                enabled = promoCode.isNotEmpty(),
                                 modifier = Modifier
                                     .padding(end = 8.dp)
                                     .height(48.dp),
                                 shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0xFFF1F1F1),
-                                    contentColor = Color.Gray
+                                    containerColor = if (promoCode.isEmpty()) Color(0xFFF1F1F1) else Color(0xFF1A50FF),
+                                    contentColor = if (promoCode.isEmpty()) Color.Gray else Color.White
                                 )
                             ) {
                                 Text("Apply")
