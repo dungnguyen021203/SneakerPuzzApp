@@ -22,7 +22,7 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.CategoryModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
-import com.example.sneakerpuzzshop.utils.ROUTE_CATEGORY_PRODUCTS
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_CATEGORY_PRODUCTS
 
 @Composable
 fun CategoryView(modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel(), navController: NavHostController) {

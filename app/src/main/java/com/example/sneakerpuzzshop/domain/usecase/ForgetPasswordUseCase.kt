@@ -2,7 +2,7 @@ package com.example.sneakerpuzzshop.domain.usecase;
 
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
-import com.example.sneakerpuzzshop.utils.await
+import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 

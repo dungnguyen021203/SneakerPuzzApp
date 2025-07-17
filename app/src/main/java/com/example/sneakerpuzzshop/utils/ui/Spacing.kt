@@ -1,5 +1,6 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.ui
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
@@ -14,6 +15,6 @@ data class Spacing(
 
 val LocalSpacing = staticCompositionLocalOf { Spacing() }
 
-val androidx.compose.material3.MaterialTheme.spacing: Spacing
+val MaterialTheme.spacing: Spacing
     @Composable
     get() = LocalSpacing.current

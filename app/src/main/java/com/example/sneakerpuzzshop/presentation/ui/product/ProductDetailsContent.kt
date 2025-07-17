@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.ProductModel
-import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCTS_DETAILS
-import com.example.sneakerpuzzshop.utils.ROUTE_PRODUCT_REVIEW
-import com.example.sneakerpuzzshop.utils.formatCurrency
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCT_REVIEW
+import com.example.sneakerpuzzshop.utils.others.formatCurrency
 
 @Composable
 fun ProductDetailsContent(

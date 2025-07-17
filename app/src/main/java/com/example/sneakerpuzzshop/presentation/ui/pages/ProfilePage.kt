@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
-import com.example.sneakerpuzzshop.utils.ROUTE_HOME
-import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 
 @Composable
 fun ProfilePage(

@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.others
 
 import android.content.Context
 import androidx.credentials.ClearCredentialStateRequest
@@ -12,11 +12,10 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
-
 class GoogleSignInHelper @Inject constructor(
     private val context: Context,
 ) {
-    private val credentialManager = CredentialManager.create(context)
+    private val credentialManager = CredentialManager.Companion.create(context)
 
     private suspend fun buildCredentialRequest(): GetCredentialResponse {
         val request = GetCredentialRequest.Builder()
@@ -42,9 +41,9 @@ class GoogleSignInHelper @Inject constructor(
             val credential = result.credential
             if(
                 credential is CustomCredential &&
-                credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                credential.type == GoogleIdTokenCredential.Companion.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
             ) {
-                val tokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+                val tokenCredential = GoogleIdTokenCredential.Companion.createFrom(credential.data)
                 val idToken = tokenCredential.idToken
                 Resource.Success(idToken)
             } else {

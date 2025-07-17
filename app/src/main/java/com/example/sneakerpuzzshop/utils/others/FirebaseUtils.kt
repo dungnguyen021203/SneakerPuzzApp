@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.others
 
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.ExperimentalCoroutinesApi

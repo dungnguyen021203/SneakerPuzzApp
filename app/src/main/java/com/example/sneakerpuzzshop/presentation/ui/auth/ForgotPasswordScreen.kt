@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -41,8 +40,9 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.AuthHeader
 import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
-import com.example.sneakerpuzzshop.utils.LoadingCircle
-import com.example.sneakerpuzzshop.utils.*
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 
 @Composable
 fun ForgetPasswordScreen(viewModel: AuthViewModel, navController: NavHostController) {

@@ -1,9 +1,8 @@
 package com.example.sneakerpuzzshop.data.repository
 
-import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.ReviewModel
 import com.example.sneakerpuzzshop.domain.repository.ReviewRepository
-import com.example.sneakerpuzzshop.utils.await
+import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 

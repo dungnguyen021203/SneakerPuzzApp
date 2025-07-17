@@ -2,7 +2,7 @@ package com.example.sneakerpuzzshop.data.repository
 
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.repository.CartRepository
-import com.example.sneakerpuzzshop.utils.await
+import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 

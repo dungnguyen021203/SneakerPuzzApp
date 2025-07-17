@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.domain.model.ReviewModel
-import com.example.sneakerpuzzshop.utils.formatTimestamp
+import com.example.sneakerpuzzshop.utils.others.formatTimestamp
 
 @Composable
 fun ProductReviewCard(modifier: Modifier = Modifier, review: ReviewModel) {

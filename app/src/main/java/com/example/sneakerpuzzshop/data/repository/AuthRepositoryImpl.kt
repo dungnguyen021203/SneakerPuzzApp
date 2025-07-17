@@ -3,7 +3,7 @@ package com.example.sneakerpuzzshop.data.repository
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
-import com.example.sneakerpuzzshop.utils.await
+import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

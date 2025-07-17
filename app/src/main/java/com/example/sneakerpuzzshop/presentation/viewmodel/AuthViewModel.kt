@@ -11,7 +11,7 @@ import com.example.sneakerpuzzshop.domain.usecase.GetUserInformationUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.LoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.SignupUseCase
-import com.example.sneakerpuzzshop.utils.GoogleSignInHelper
+import com.example.sneakerpuzzshop.utils.others.GoogleSignInHelper
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

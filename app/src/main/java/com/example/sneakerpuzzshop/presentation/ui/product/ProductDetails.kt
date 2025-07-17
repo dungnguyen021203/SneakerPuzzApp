@@ -13,7 +13,7 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.ProductViewModel
-import com.example.sneakerpuzzshop.utils.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @Composable
 fun ProductDetails(

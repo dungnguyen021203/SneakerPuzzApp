@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

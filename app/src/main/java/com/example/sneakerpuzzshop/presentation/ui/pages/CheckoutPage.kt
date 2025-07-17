@@ -38,7 +38,7 @@ import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutBottom
 import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutProductCard
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
-import com.example.sneakerpuzzshop.utils.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @Composable
 fun CheckoutPage(

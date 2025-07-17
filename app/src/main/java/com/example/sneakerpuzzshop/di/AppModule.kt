@@ -7,7 +7,7 @@ import com.example.sneakerpuzzshop.domain.usecase.ForgetPasswordUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.LoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.SignupUseCase
-import com.example.sneakerpuzzshop.utils.GoogleSignInHelper
+import com.example.sneakerpuzzshop.utils.others.GoogleSignInHelper
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module

@@ -2,11 +2,9 @@ package com.example.sneakerpuzzshop.presentation.ui.auth
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.*
@@ -26,13 +24,13 @@ import androidx.navigation.NavController
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.AuthHeader
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
-import com.example.sneakerpuzzshop.utils.ROUTE_HOME
-import com.example.sneakerpuzzshop.utils.ROUTE_LOGIN
-import com.example.sneakerpuzzshop.utils.ROUTE_SIGNUP
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_SIGNUP
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.presentation.components.showToast
-import com.example.sneakerpuzzshop.utils.LoadingCircle
-import com.example.sneakerpuzzshop.utils.ROUTE_FORGET_PW
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

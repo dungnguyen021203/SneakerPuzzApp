@@ -3,7 +3,6 @@ package com.example.sneakerpuzzshop.presentation.ui.pages
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -41,8 +39,8 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.ui.cart.CartItemRow
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
-import com.example.sneakerpuzzshop.utils.LoadingCircle
-import com.example.sneakerpuzzshop.utils.ROUTE_CHECKOUT
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_CHECKOUT
 
 @Composable
 fun CartPage(

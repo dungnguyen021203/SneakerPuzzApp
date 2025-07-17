@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.ReviewModel
 import com.example.sneakerpuzzshop.presentation.components.showToast
-import com.example.sneakerpuzzshop.utils.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.ui
 
 const val ROUTE_LOGIN = "login"
 const val ROUTE_SIGNUP = "signup"

@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.ProductModel
-import com.example.sneakerpuzzshop.utils.formatCurrency
+import com.example.sneakerpuzzshop.utils.others.formatCurrency
 
 @Composable
 fun CartItemRow(

@@ -2,14 +2,14 @@ package com.example.sneakerpuzzshop.presentation.ui.splash
 
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.example.sneakerpuzzshop.presentation.components.AuthHeader
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
-import com.example.sneakerpuzzshop.utils.*
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 import kotlinx.coroutines.delay
 
 @Composable

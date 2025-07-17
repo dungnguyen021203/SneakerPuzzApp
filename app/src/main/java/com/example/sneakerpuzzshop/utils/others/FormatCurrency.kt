@@ -1,4 +1,4 @@
-package com.example.sneakerpuzzshop.utils
+package com.example.sneakerpuzzshop.utils.others
 
 import java.text.NumberFormat
 import java.util.Locale

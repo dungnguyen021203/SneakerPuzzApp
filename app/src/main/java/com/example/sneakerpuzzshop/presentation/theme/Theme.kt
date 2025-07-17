@@ -10,8 +10,8 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.runtime.CompositionLocalProvider
-import com.example.sneakerpuzzshop.utils.LocalSpacing
-import com.example.sneakerpuzzshop.utils.Spacing
+import com.example.sneakerpuzzshop.utils.ui.LocalSpacing
+import com.example.sneakerpuzzshop.utils.ui.Spacing
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
