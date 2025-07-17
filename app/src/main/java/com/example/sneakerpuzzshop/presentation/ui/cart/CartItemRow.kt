@@ -45,7 +45,7 @@ fun CartItemRow(
 ) {
     Card(
         modifier = Modifier
-            .padding(16.dp)
+            .padding(10.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),

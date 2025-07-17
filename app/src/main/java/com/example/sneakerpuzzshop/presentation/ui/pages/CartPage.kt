@@ -2,7 +2,9 @@ package com.example.sneakerpuzzshop.presentation.ui.pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,9 +16,11 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ShoppingBag
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,94 +69,109 @@ fun CartPage(
             }
 
             is Resource.Loading -> LoadingCircle()
+
             is Resource.Success -> {
                 val cartList = (state as Resource.Success).data
-                var isEmpty = cartList.isEmpty()
-                Column(
+                val isEmpty = cartList.isEmpty()
+
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(WindowInsets.systemBars.asPaddingValues())
-                        .padding(10.dp)
+                        .padding(10.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(bottom = 32.dp)
                 ) {
-                    Text(
-                        text = "Your Cart",
-                        fontSize = 22.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    item {
+                        Text(
+                            text = "Your Cart",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
 
                     if (isEmpty) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 100.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Top
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingBag,
-                                contentDescription = "Empty Cart",
-                                tint = Color.LightGray,
-                                modifier = Modifier.size(100.dp),
-                            )
-                            Text(
-                                text = "Your Cart is Empty",
-                                fontSize = 20.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(top = 16.dp)
-                            )
-                            Text(
-                                text = "Looks like you haven’t added anything to your cart yet.",
-                                fontSize = 16.sp,
-                                color = Color.Gray,
-                                modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp),
-                                lineHeight = 20.sp
-                            )
+                        item {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 100.dp),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Top
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingBag,
+                                    contentDescription = "Empty Cart",
+                                    tint = Color.LightGray,
+                                    modifier = Modifier.size(100.dp),
+                                )
+                                Text(
+                                    text = "Your Cart is Empty",
+                                    fontSize = 20.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(top = 16.dp)
+                                )
+                                Text(
+                                    text = "Looks like you haven’t added anything to your cart yet.",
+                                    fontSize = 16.sp,
+                                    color = Color.Gray,
+                                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp),
+                                    lineHeight = 20.sp
+                                )
+                            }
                         }
                     } else {
-                        LazyColumn {
-                            items(cartList) { item ->
+                        items(cartList) { item ->
+                            val product = productMap[item.productId]
 
-                                val product = productMap[item.productId]
-
-                                CartItemRow(item = item, onAdd = {
+                            CartItemRow(
+                                item = item,
+                                onAdd = {
                                     viewModel.updateCart(
                                         userId,
                                         item.productId,
                                         item.size,
                                         item.quantity + 1
                                     )
-                                }, onRemove = {
+                                },
+                                onRemove = {
                                     viewModel.updateCart(
                                         userId,
                                         item.productId,
                                         item.size,
                                         item.quantity - 1
                                     )
-                                }, onDelete = {
+                                },
+                                onDelete = {
                                     viewModel.removeFromCart(userId, item.productId, item.size)
-                                }, product = product)
-                            }
+                                },
+                                product = product
+                            )
                         }
                     }
 
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
+
+                    item {
                         Button(
                             onClick = { navController.navigate(ROUTE_CHECKOUT) },
                             enabled = !isEmpty,
                             modifier = Modifier
-                                .height(70.dp)
-                                .width(150.dp)
-                                .padding(top = 16.dp)
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF1A50FF),
+                                contentColor = Color.White
+                            )
                         ) {
                             Text(text = "Check Out", fontSize = 16.sp)
                         }
                     }
-
                 }
-
             }
         }
     }

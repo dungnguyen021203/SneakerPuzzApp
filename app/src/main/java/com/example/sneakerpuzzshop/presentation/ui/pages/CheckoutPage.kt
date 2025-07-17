@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -91,96 +92,101 @@ fun CheckoutPage(
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
 
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues())
+                        .padding(WindowInsets.systemBars.asPaddingValues()),
+                    contentPadding = PaddingValues(bottom = 32.dp)
                 ) {
-                    LazyColumn {
-                        items(cartList) { cart ->
-                            val product = productMap[cart.productId]
-                            CheckoutProductCard(product = product, cart = cart, userId = userId)
-                        }
+                    // Card
+                    items(cartList) { cart ->
+                        val product = productMap[cart.productId]
+                        CheckoutProductCard(product = product, cart = cart, userId = userId)
                     }
 
                     // Promo Code
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 10.dp)
-                            .height(60.dp)
-                            .border(
-                                width = 1.dp,
-                                color = Color(0xFFE0E0E0),
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 10.dp, vertical = 12.dp)
+                                .height(60.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color(0xFFE0E0E0),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                                .background(Color.White, shape = RoundedCornerShape(12.dp)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TextField(
+                                value = "",
+                                onValueChange = { /* TODO */ },
+                                placeholder = {
+                                    Text(
+                                        text = "Have a promo code? Enter here",
+                                        fontSize = 14.sp
+                                    )
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 8.dp),
+                                colors = TextFieldDefaults.colors(
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    focusedContainerColor = Color.Transparent,
+                                    unfocusedContainerColor = Color.Transparent,
+                                    disabledContainerColor = Color.Transparent
+                                ),
+                                singleLine = true,
                                 shape = RoundedCornerShape(12.dp)
                             )
-                            .background(Color.White, shape = RoundedCornerShape(12.dp)),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        TextField(
-                            value = "",
-                            onValueChange = { it },
-                            placeholder = {
-                                Text(
-                                    text = "Have a promo code? Enter here",
-                                    fontSize = 14.sp
-                                )
-                            },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(start = 8.dp),
-                            colors = TextFieldDefaults.colors(
-                                focusedIndicatorColor = Color.Transparent,
-                                unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent,
-                                focusedContainerColor = Color.Transparent,
-                                unfocusedContainerColor = Color.Transparent,
-                                disabledContainerColor = Color.Transparent
-                            ),
-                            singleLine = true,
-                            shape = RoundedCornerShape(12.dp)
-                        )
 
-                        Button(
-                            onClick = { /* Apply promo code */ },
-                            modifier = Modifier
-                                .padding(end = 8.dp)
-                                .height(48.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFFF1F1F1),
-                                contentColor = Color.Gray
-                            )
-                        ) {
-                            Text("Apply")
+                            Button(
+                                onClick = { /* Apply promo code */ },
+                                modifier = Modifier
+                                    .padding(end = 8.dp)
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFFF1F1F1),
+                                    contentColor = Color.Gray
+                                )
+                            ) {
+                                Text("Apply")
+                            }
                         }
                     }
 
-                    // Bottom
-                    CheckoutBottom(
-                        userName = user?.displayName,
-                        userPhoneNumber = user?.phoneNumber
-                    )
-
-                    // Checkout
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Button(
-                        onClick = { /* TODO: Handle checkout */ },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF1A50FF),
-                            contentColor = Color.White
+                    // User Info
+                    item {
+                        CheckoutBottom(
+                            userName = user?.displayName,
+                            userPhoneNumber = user?.phoneNumber
                         )
-                    ) {
-                        Text(text = "Checkout $1615.4")
                     }
 
-
+                    // Checkout Button
+                    item {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Button(
+                            onClick = { /* TODO: Handle checkout */ },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .height(48.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF1A50FF),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(text = "Checkout $1615.4")
+                        }
+                    }
                 }
+
             }
         }
     }
