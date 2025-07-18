@@ -226,7 +226,12 @@ fun CheckoutPage(
                                     when(result) {
                                         is PaymentResult.Canceled -> showToast(activity, "Đã hủy thanh toán")
                                         is PaymentResult.Error -> showToast(activity, "Có lỗi xảy ra")
-                                        is PaymentResult.Success -> showToast(activity, "Thanh toán thành công")
+                                        is PaymentResult.Success -> {
+                                            showToast(activity, "Thanh toán thành công")
+                                            navController.navigate("thank_you") {
+                                                popUpTo("checkout") { inclusive = true }
+                                            }
+                                        }
                                     }
                                 }
                             },

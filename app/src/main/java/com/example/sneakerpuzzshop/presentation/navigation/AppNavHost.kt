@@ -16,6 +16,7 @@ import com.example.sneakerpuzzshop.presentation.ui.pages.CheckoutPage
 import com.example.sneakerpuzzshop.presentation.ui.product.ProductDetails
 import com.example.sneakerpuzzshop.presentation.ui.review.ProductReview
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
+import com.example.sneakerpuzzshop.presentation.ui.thankyou.ThankyouPage
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CATEGORY_PRODUCTS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CHECKOUT
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
@@ -25,6 +26,7 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCT_REVIEW
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SIGNUP
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SPLASH
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_THANK_YOU
 
 @Composable
 fun AppNavHost(
@@ -67,6 +69,9 @@ fun AppNavHost(
         }
         composable(ROUTE_CHECKOUT) {
             CheckoutPage(navController)
+        }
+        composable(ROUTE_THANK_YOU) {
+            ThankyouPage(navController = navController)
         }
     }
 }
