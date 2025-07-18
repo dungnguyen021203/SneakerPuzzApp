@@ -96,4 +96,11 @@ dependencies {
 
     // Lottie
     implementation("com.airbnb.android:lottie-compose:6.0.0")
+
+    // Zalopay
+    implementation(fileTree(mapOf(
+        "dir" to "C:\\Users\\Admin\\Desktop\\ZaloPayLib",
+        "include" to listOf("*.aar", "*.jar"),
+        "exclude" to listOf("")
+    )))
 }

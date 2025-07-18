@@ -1,5 +1,7 @@
 package com.example.sneakerpuzzshop.presentation.ui.pages
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
@@ -44,9 +46,12 @@ import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutProductCard
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
 import com.example.sneakerpuzzshop.utils.others.BillingHelper
+import com.example.sneakerpuzzshop.utils.others.PaymentResult
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
+import com.example.sneakerpuzzshop.utils.others.startPayment
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
+@SuppressLint("ContextCastToActivity")
 @Composable
 fun CheckoutPage(
     navController: NavHostController,
@@ -59,6 +64,7 @@ fun CheckoutPage(
     val productMap by cartViewModel.productDetailsMap.collectAsState()
 
     val context = LocalContext.current
+    val activity = LocalContext.current as Activity
 
     var promoCode by remember { mutableStateOf("") }
     var shippingFeeOverride by remember { mutableStateOf<Double?>(null) }
@@ -95,7 +101,7 @@ fun CheckoutPage(
 
                 if (showEmptyCartDialog) {
                     androidx.compose.material3.AlertDialog(
-                        onDismissRequest = {  },
+                        onDismissRequest = { },
                         title = {
                             Text(text = "Empty Cart", fontSize = 18.sp)
                         },
@@ -167,9 +173,14 @@ fun CheckoutPage(
 
                             Button(
                                 onClick = {
-                                    if (promoCode.trim().equals("FREESHIPPING", ignoreCase = true)) {
+                                    if (promoCode.trim()
+                                            .equals("FREESHIPPING", ignoreCase = true)
+                                    ) {
                                         shippingFeeOverride = 0.0
-                                        showToast(context = context, message = "Coupon applied successfully")
+                                        showToast(
+                                            context = context,
+                                            message = "Coupon applied successfully"
+                                        )
                                     } else {
                                         showToast(context = context, message = "Invalid coupon")
                                     }
@@ -182,7 +193,9 @@ fun CheckoutPage(
                                     .height(48.dp),
                                 shape = RoundedCornerShape(8.dp),
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (promoCode.isEmpty()) Color(0xFFF1F1F1) else Color(0xFF1A50FF),
+                                    containerColor = if (promoCode.isEmpty()) Color(0xFFF1F1F1) else Color(
+                                        0xFF1A50FF
+                                    ),
                                     contentColor = if (promoCode.isEmpty()) Color.Gray else Color.White
                                 )
                             ) {
@@ -205,7 +218,18 @@ fun CheckoutPage(
                     item {
                         Spacer(modifier = Modifier.height(20.dp))
                         Button(
-                            onClick = { /* TODO: Handle checkout */ },
+                            onClick = {
+                                startPayment(
+                                    activity = activity,
+                                    amount = billingState.total.toInt().toString(),
+                                ) { result ->
+                                    when(result) {
+                                        is PaymentResult.Canceled -> showToast(activity, "Đã hủy thanh toán")
+                                        is PaymentResult.Error -> showToast(activity, "Có lỗi xảy ra")
+                                        is PaymentResult.Success -> showToast(activity, "Thanh toán thành công")
+                                    }
+                                }
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp)

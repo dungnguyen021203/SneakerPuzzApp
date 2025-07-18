@@ -1,21 +1,21 @@
 package com.example.sneakerpuzzshop
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.remember
 import com.example.sneakerpuzzshop.presentation.navigation.AppNavHost
 import com.example.sneakerpuzzshop.presentation.theme.SneakerPuzzShopTheme
-import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.AndroidEntryPoint
+import vn.zalopay.sdk.ZaloPaySDK
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -36,5 +36,10 @@ class MainActivity : ComponentActivity() {
                 }
             )
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        ZaloPaySDK.getInstance().onResult(intent)
     }
 }
