@@ -3,6 +3,7 @@ package com.example.sneakerpuzzshop.data.repository
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.repository.CartRepository
 import com.example.sneakerpuzzshop.utils.others.await
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
 
@@ -71,5 +72,9 @@ class CartRepositoryImpl @Inject constructor(
             }
         }
         firestore.collection("users").document(userId).update("cart", currentCart).await()
+    }
+
+    override suspend fun clearCart(userId: String) {
+        firestore.collection("users").document(userId).update("cart", FieldValue.delete())
     }
 }

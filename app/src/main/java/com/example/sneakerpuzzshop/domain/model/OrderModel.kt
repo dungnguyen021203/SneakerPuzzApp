@@ -1,6 +1,16 @@
 package com.example.sneakerpuzzshop.domain.model
 
+import com.example.sneakerpuzzshop.utils.others.BillingResult
+import com.google.firebase.Timestamp
+
 data class OrderModel(
-    val id: String = "",
-    
+    val orderId: String = "",
+    val userId: String = "",
+    val userName: String = "",
+    val userAddress: String = "",
+    val userPhoneNumber: String = "",
+    val date: Timestamp = Timestamp.now(),
+    val items: List<CartItemModel> = emptyList(),
+    val status: String = "Pending",
+    val billingResult: BillingResult = BillingResult()
 )

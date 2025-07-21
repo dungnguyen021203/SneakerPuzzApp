@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -68,6 +69,7 @@ fun CheckoutPage(
 
     var promoCode by remember { mutableStateOf("") }
     var shippingFeeOverride by remember { mutableStateOf<Double?>(null) }
+    var hasNavigatedToTYPage by remember { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -93,14 +95,17 @@ fun CheckoutPage(
 
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
-                val showEmptyCartDialog = remember(cartList) { cartList.isEmpty() }
+                val showEmptyCartDialog = remember(
+                    cartList,
+                    hasNavigatedToTYPage
+                ) { cartList.isEmpty() && !hasNavigatedToTYPage }
 
                 val billingState = remember(cartList, productMap, shippingFeeOverride) {
                     BillingHelper.calculate(cartList, productMap, shippingFeeOverride)
                 }
 
                 if (showEmptyCartDialog) {
-                    androidx.compose.material3.AlertDialog(
+                    AlertDialog(
                         onDismissRequest = { },
                         title = {
                             Text(text = "Empty Cart", fontSize = 18.sp)
@@ -223,11 +228,21 @@ fun CheckoutPage(
                                     activity = activity,
                                     amount = billingState.total.toInt().toString(),
                                 ) { result ->
-                                    when(result) {
-                                        is PaymentResult.Canceled -> showToast(activity, "Đã hủy thanh toán")
-                                        is PaymentResult.Error -> showToast(activity, "Có lỗi xảy ra")
+                                    when (result) {
+                                        is PaymentResult.Canceled -> showToast(
+                                            activity,
+                                            "Đã hủy thanh toán"
+                                        )
+
+                                        is PaymentResult.Error -> showToast(
+                                            activity,
+                                            "Có lỗi xảy ra"
+                                        )
+
                                         is PaymentResult.Success -> {
                                             showToast(activity, "Thanh toán thành công")
+                                            hasNavigatedToTYPage = true
+                                            cartViewModel.clearCart(userId)
                                             navController.navigate("thank_you") {
                                                 popUpTo("checkout") { inclusive = true }
                                             }

@@ -6,6 +6,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.domain.usecase.AddToCartUseCase
+import com.example.sneakerpuzzshop.domain.usecase.ClearCartUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetCartFromUserUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ProductDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.RemoveFromCartUseCase
@@ -22,7 +23,8 @@ class CartViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val removeFromCartUseCase: RemoveFromCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
-    private val productDetailsUseCase: ProductDetailsUseCase
+    private val productDetailsUseCase: ProductDetailsUseCase,
+    private val clearCartUseCase: ClearCartUseCase
 ) : ViewModel() {
 
     private val _cart = MutableStateFlow<Resource<List<CartItemModel>>>(Resource.Loading)
@@ -111,6 +113,17 @@ class CartViewModel @Inject constructor(
                         _cart.value = Resource.Success(currentCart)
                     }
                 }
+            } catch (e: Exception) {
+                _cart.value = Resource.Failure(e)
+            }
+        }
+    }
+
+    fun clearCart(userId: String) {
+        viewModelScope.launch {
+            try {
+                clearCartUseCase(userId)
+                _cart.value = Resource.Success(emptyList())
             } catch (e: Exception) {
                 _cart.value = Resource.Failure(e)
             }

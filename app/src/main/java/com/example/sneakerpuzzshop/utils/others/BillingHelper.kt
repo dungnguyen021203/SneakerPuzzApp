@@ -4,10 +4,10 @@ import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 
 data class BillingResult(
-    val subtotal: Double,
-    val tax: Double,
-    val shipping: Double,
-    val total: Double
+    val subtotal: Double = 0.0,
+    val tax: Double = 0.0,
+    val shipping: Double = 0.0,
+    val total: Double = 0.0
 )
 
 object BillingHelper {
