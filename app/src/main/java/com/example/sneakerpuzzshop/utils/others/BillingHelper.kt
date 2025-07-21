@@ -25,7 +25,7 @@ object BillingHelper {
         }
         val tax = subtotal * TAX_RATE
         val shippingFee = shippingFeeOverride ?: SHIPPING_FEE
-        val total = subtotal + tax + SHIPPING_FEE
+        val total = subtotal + tax + shippingFee
 
         return BillingResult(
             subtotal = subtotal,
