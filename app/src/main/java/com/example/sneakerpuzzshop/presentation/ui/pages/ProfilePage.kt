@@ -49,6 +49,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -158,15 +159,27 @@ fun ProfilePRe() {
                 .padding(horizontal = 16.dp)
         ) {
             Box {
-                Image(
-                    bitmap = bitmap?.asImageBitmap()!!,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(CircleShape)
-                        .size(200.dp)
-                )
+                if (bitmap != null) {
+                    Image(
+                        bitmap = bitmap?.asImageBitmap()!!,
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(CircleShape)
+                            .size(200.dp)
+                    )
+                } else {
+                    Image(
+                        painterResource(id =R.drawable.ic_google_logo),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(CircleShape)
+                            .size(200.dp)
+                    )
+                }
 
                 Box(
                     modifier = Modifier
