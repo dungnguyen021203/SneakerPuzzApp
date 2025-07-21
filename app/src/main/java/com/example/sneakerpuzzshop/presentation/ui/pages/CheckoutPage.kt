@@ -2,6 +2,7 @@ package com.example.sneakerpuzzshop.presentation.ui.pages
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,6 +47,7 @@ import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutBottom
 import com.example.sneakerpuzzshop.presentation.ui.checkout.CheckoutProductCard
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.OrderViewModel
 import com.example.sneakerpuzzshop.utils.others.BillingHelper
 import com.example.sneakerpuzzshop.utils.others.PaymentResult
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
@@ -57,13 +59,18 @@ import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 fun CheckoutPage(
     navController: NavHostController,
     cartViewModel: CartViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    orderViewModel: OrderViewModel = hiltViewModel()
 ) {
+    // Get user uid
     val userId = authViewModel.currentUser?.uid!!.toString()
+
+    // State collector
     val userState by authViewModel.userInformation.collectAsState()
     val cartState by cartViewModel.cart.collectAsState()
     val productMap by cartViewModel.productDetailsMap.collectAsState()
 
+    // Context and Activity
     val context = LocalContext.current
     val activity = LocalContext.current as Activity
 
@@ -95,6 +102,8 @@ fun CheckoutPage(
 
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
+                Log.d("OrderDebug", "Name: ${user?.name}, Phone: ${user?.phoneNumber}, Address: ${user?.address}")
+
                 val showEmptyCartDialog = remember(
                     cartList,
                     hasNavigatedToTYPage
@@ -242,6 +251,14 @@ fun CheckoutPage(
                                         is PaymentResult.Success -> {
                                             showToast(activity, "Thanh toán thành công")
                                             hasNavigatedToTYPage = true
+                                            orderViewModel.addToOrder(
+                                                userId = userId,
+                                                userPhoneNumber = user?.phoneNumber,
+                                                userName = user?.name,
+                                                userAddress = user?.address,
+                                                cartItem = cartList,
+                                                billingResult = billingState
+                                            )
                                             cartViewModel.clearCart(userId)
                                             navController.navigate("thank_you") {
                                                 popUpTo("checkout") { inclusive = true }

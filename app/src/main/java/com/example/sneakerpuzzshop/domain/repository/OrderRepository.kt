@@ -1,0 +1,15 @@
+package com.example.sneakerpuzzshop.domain.repository
+
+import com.example.sneakerpuzzshop.domain.model.CartItemModel
+import com.example.sneakerpuzzshop.utils.others.BillingResult
+
+interface OrderRepository {
+    suspend fun addToOrder(
+        userId: String,
+        userName: String?,
+        userPhoneNumber: String?,
+        userAddress: String?,
+        cartItem: List<CartItemModel>,
+        billingResult: BillingResult
+    )
+}
