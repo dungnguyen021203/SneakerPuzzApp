@@ -52,13 +52,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
+import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.EditProfileItemRow
 import com.example.sneakerpuzzshop.presentation.components.showToast
@@ -188,23 +191,33 @@ fun EditProfile(
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(Color.White)
             ) {
-                if (avatarUploadState == Resource.Loading) {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .padding(8.dp)
-                            .align(Alignment.CenterHorizontally)
-                    )
-                } else {
+                if(user?.avatar?.isBlank() == true) {
                     Image(
-                        painter = rememberAsyncImagePainter(user?.avatar),
+                        painterResource(R.drawable.pro5),
                         contentDescription = "Profile image",
                         modifier = Modifier
-                            .size(100.dp)
+                            .size(130.dp)
                             .padding(8.dp)
-                            .clip(CircleShape),
-                        contentScale = ContentScale.Crop
                     )
+                } else {
+                    if (avatarUploadState == Resource.Loading) {
+                        CircularProgressIndicator(
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(8.dp)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                    } else {
+                        Image(
+                            painter = rememberAsyncImagePainter(user?.avatar),
+                            contentDescription = "Profile image",
+                            modifier = Modifier
+                                .size(100.dp)
+                                .padding(8.dp)
+                                .clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
 

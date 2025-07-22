@@ -45,13 +45,24 @@ fun EditProfileItemRow(label: String, content: String, copy: Boolean, navControl
                 color = Color(0xFF6E6E6E),
                 modifier = Modifier.weight(1f)
             )
-            Text(
-                text = content,
-                fontSize = 16.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(2f)
-            )
+            if(content.isEmpty()){
+                Text(
+                    text = "Update needed...",
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.Gray,
+                    modifier = Modifier.weight(2f)
+                )
+            } else {
+                Text(
+                    text = content,
+                    fontSize = 16.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(2f)
+                )
+            }
         }
         Spacer(modifier = Modifier.width(10.dp))
         Icon(

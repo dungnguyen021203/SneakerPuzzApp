@@ -92,7 +92,7 @@ fun ProfilePage(
                         .fillMaxSize()
                         .padding(WindowInsets.systemBars.asPaddingValues())
                         .padding(horizontal = 16.dp)
-                        .padding(top = 10.dp),
+                        .padding(top = 25.dp),
                     contentPadding = PaddingValues(bottom = 32.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -113,13 +113,23 @@ fun ProfilePage(
                             elevation = CardDefaults.cardElevation(6.dp),
                             colors = CardDefaults.cardColors(Color.White)
                         ) {
-                            AsyncImage(
-                                model = user?.avatar,
-                                contentDescription = "Profile image",
-                                modifier = Modifier
-                                    .size(130.dp)
-                                    .padding(8.dp)
-                            )
+                            if(user?.avatar?.isBlank() == true) {
+                                Image(
+                                    painterResource(R.drawable.pro5),
+                                    contentDescription = "Profile image",
+                                    modifier = Modifier
+                                        .size(130.dp)
+                                        .padding(8.dp)
+                                )
+                            } else {
+                                AsyncImage(
+                                    model = user?.avatar,
+                                    contentDescription = "Profile image",
+                                    modifier = Modifier
+                                        .size(130.dp)
+                                        .padding(8.dp)
+                                )
+                            }
                         }
                     }
 
@@ -193,7 +203,7 @@ fun ProfilePage(
                             )
                             OrderItem(
                                 icon = Icons.AutoMirrored.Filled.HelpCenter,
-                                label = "Customer Care",
+                                label = "Support",
                                 color = Color(0XFFCB6CE6),
                                 modifier = Modifier.weight(1f)
                             )
