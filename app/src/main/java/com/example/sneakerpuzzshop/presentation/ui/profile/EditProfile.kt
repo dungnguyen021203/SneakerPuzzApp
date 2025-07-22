@@ -196,8 +196,9 @@ fun EditProfile(
                         painterResource(R.drawable.pro5),
                         contentDescription = "Profile image",
                         modifier = Modifier
-                            .size(130.dp)
-                            .padding(8.dp)
+                            .size(100.dp)
+                            .padding(8.dp),
+                        contentScale = ContentScale.Crop
                     )
                 } else {
                     if (avatarUploadState == Resource.Loading) {

@@ -34,16 +34,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.utils.others.BillingResult
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
 
 @Composable
 fun CheckoutBottom(
     userName: String?,
     userPhoneNumber: String?,
     userAddress: String?,
-    billingResult: BillingResult
+    billingResult: BillingResult,
+    navController: NavHostController
 ) {
     var isShowDialog by remember { mutableStateOf(false) }
 
@@ -83,7 +87,7 @@ fun CheckoutBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "VAT 10%", fontSize = 14.sp)
-                Text(text = formatCurrency(billingResult.tax) , fontSize = 12.sp)
+                Text(text = formatCurrency(billingResult.tax), fontSize = 12.sp)
             }
             Row(
                 modifier = Modifier
@@ -92,7 +96,11 @@ fun CheckoutBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Order Total", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                Text(text = formatCurrency(billingResult.total), fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = formatCurrency(billingResult.total),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             HorizontalDivider()
             Spacer(modifier = Modifier.height(5.dp))
@@ -103,7 +111,11 @@ fun CheckoutBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Payment Method", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Change", fontSize = 14.sp, color = Color.LightGray, modifier = Modifier.clickable{isShowDialog = true})
+                Text(
+                    text = "Change",
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    modifier = Modifier.clickable { isShowDialog = true })
             }
             Row(
                 modifier = Modifier
@@ -130,7 +142,13 @@ fun CheckoutBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Shipping Address", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text(text = "Change", fontSize = 14.sp, color = Color.LightGray) /////////////////////////////////
+                Text(
+                    text = "Change",
+                    fontSize = 14.sp,
+                    color = Color.LightGray,
+                    modifier = Modifier.clickable {
+                        navController.navigate(ROUTE_EDIT_PROFILE)
+                    })
             }
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
@@ -150,7 +168,10 @@ fun CheckoutBottom(
                         modifier = Modifier.size(20.dp),
                         tint = Color.LightGray
                     )
-                    Text(text = "$userPhoneNumber", fontSize = 14.sp)
+                    if (userPhoneNumber?.isEmpty() == true) Text(
+                        text = "To be updated",
+                        fontSize = 14.sp
+                    ) else Text(text = "$userPhoneNumber", fontSize = 14.sp)
                 }
                 Row(
                     modifier = Modifier
@@ -164,6 +185,10 @@ fun CheckoutBottom(
                         modifier = Modifier.size(20.dp),
                         tint = Color.LightGray
                     )
+                    if (userAddress?.isEmpty() == true) Text(
+                        text = "To be updated",
+                        fontSize = 14.sp
+                    ) else
                     Text(
                         text = "$userAddress",
                         fontSize = 14.sp
@@ -175,7 +200,7 @@ fun CheckoutBottom(
         if (isShowDialog == true) {
             AlertDialog(
                 onDismissRequest = { isShowDialog == false },
-                title = {Text(text = "Feature not available right now")},
+                title = { Text(text = "Feature not available right now") },
                 text = {
                     Text(text = "You can only pay with ZaloPay. Sorry for inconvenient")
                 },

@@ -224,7 +224,8 @@ fun CheckoutPage(
                             userName = user?.name,
                             userPhoneNumber = user?.phoneNumber,
                             userAddress = user?.address,
-                            billingResult = billingState
+                            billingResult = billingState,
+                            navController = navController
                         )
                     }
 
@@ -232,6 +233,7 @@ fun CheckoutPage(
                     item {
                         Spacer(modifier = Modifier.height(20.dp))
                         Button(
+                            enabled = (user?.phoneNumber?.isEmpty() == false || user?.address?.isEmpty() == false),
                             onClick = {
                                 startPayment(
                                     activity = activity,
