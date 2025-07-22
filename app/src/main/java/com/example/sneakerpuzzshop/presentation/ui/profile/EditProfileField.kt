@@ -22,35 +22,57 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-@Composable
-fun EditProfileField(modifier: Modifier = Modifier) {
-
-}
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.presentation.components.showToast
+import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.ProfileViewModel
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(showBackground = true)
 @Composable
-private fun Preview() {
+fun EditProfileField(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
+
+    var name by remember { mutableStateOf("") }
+    var userId = authViewModel.currentUser?.uid.toString()
+
+    val profileState = profileViewModel.editUserName.collectAsState()
+
+    val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Change Name", fontWeight = FontWeight.Bold)
+                    Text(text = "Change Name", fontWeight = FontWeight.Bold) /////////////////
                 },
                 navigationIcon = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
@@ -74,9 +96,9 @@ private fun Preview() {
                 color = Color.Gray
             )
             TextField(
-                value = "Something",
+                value = name,
                 onValueChange = {
-                    it
+                    name = it
                 },
                 label = {
                     Text(text = "Name")
@@ -101,6 +123,7 @@ private fun Preview() {
 
             Button(
                 onClick = {
+                    profileViewModel.updateUserName(userId = userId, userName = name)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -115,4 +138,22 @@ private fun Preview() {
             }
         }
     }
+
+    profileState.value?.let {
+        when(it) {
+            is Resource.Failure -> {
+                LaunchedEffect(it) {
+                    showToast(context = context, message = it.exception.message.toString())
+                }
+            }
+            Resource.Loading -> LoadingCircle()
+            is Resource.Success<*> -> {
+                LaunchedEffect(Unit) {
+                    showToast(context = context, message = "Thay đổi thành công")
+                    navController.popBackStack()
+                }
+            }
+        }
+    }
 }
+

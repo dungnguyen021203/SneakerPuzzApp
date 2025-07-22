@@ -43,18 +43,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -137,9 +133,9 @@ fun EditProfile(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            EditProfileItemRow("Name", user?.name.toString(), true)
+            EditProfileItemRow("Name", user?.name.toString(), true, navController)
 
-            EditProfileItemRow("Username", viewModel.currentUser?.email.toString(), false)
+            EditProfileItemRow("Username", viewModel.currentUser?.email.toString(), false, navController)
 
             HorizontalDivider()
 
@@ -150,13 +146,13 @@ fun EditProfile(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            EditProfileItemRow("UserID", viewModel.currentUser?.uid.toString(), false)
+            EditProfileItemRow("UserID", viewModel.currentUser?.uid.toString(), false, navController)
 
-            EditProfileItemRow("E-mail", user?.email.toString(), false)
+            EditProfileItemRow("E-mail", user?.email.toString(), false, navController)
 
-            EditProfileItemRow("Phone", user?.phoneNumber.toString(), true)
+            EditProfileItemRow("Phone", user?.phoneNumber.toString(), true, navController)
 
-            EditProfileItemRow("Address", user?.address.toString(), true)
+            EditProfileItemRow("Address", user?.address.toString(), true, navController)
 
             HorizontalDivider()
 

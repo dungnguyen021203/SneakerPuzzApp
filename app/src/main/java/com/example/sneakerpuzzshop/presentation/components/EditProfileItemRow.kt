@@ -21,9 +21,11 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD
 
 @Composable
-fun EditProfileItemRow(label: String, content: String, copy: Boolean) {
+fun EditProfileItemRow(label: String, content: String, copy: Boolean, navController: NavHostController) {
     val clipboardManager = LocalClipboardManager.current
 
     Row(
@@ -58,6 +60,8 @@ fun EditProfileItemRow(label: String, content: String, copy: Boolean) {
             modifier = Modifier.clickable{
                 if (!copy) {
                     clipboardManager.setText(AnnotatedString(content))
+                } else {
+                    navController.navigate(ROUTE_EDIT_PROFILE_FIELD)
                 }
             }
         )
