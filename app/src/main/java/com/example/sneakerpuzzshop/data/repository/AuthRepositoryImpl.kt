@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import javax.inject.Inject
@@ -129,6 +130,22 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAccount(uid: String): Resource<Unit> {
         return try {
+            val userInfo = (getUserInformation() as? Resource.Success)?.data
+            val ordersSnapshot = firestore.collection("orders")
+                .whereEqualTo("userId", uid)
+                .get().await()
+
+            for (doc in ordersSnapshot.documents) {
+                doc.reference.update(
+                    mapOf(
+                        "userId" to "Anonymous",
+                        "userEmail" to "${userInfo?.email ?: ""} (deleted)",
+                        "userName" to "${userInfo?.name ?: ""} (deleted)",
+                        "userAddress" to "${userInfo?.address ?: ""} (deleted)",
+                        "userPhoneNumber" to "${userInfo?.phoneNumber ?: ""} (deleted)"
+                    )
+                ).await()
+            }
             firestore.collection("users").document(uid).delete().await()
             firebaseAuth.currentUser?.delete()?.await()
             Resource.Success(Unit)
