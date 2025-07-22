@@ -8,12 +8,12 @@ import com.example.sneakerpuzzshop.data.repository.CloudinaryRepositoryImpl
 import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
 import com.example.sneakerpuzzshop.domain.usecase.ChangePasswordUseCase
+import com.example.sneakerpuzzshop.domain.usecase.DeleteAccountUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ForgetPasswordUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetUserInformationUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.LoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.SignupUseCase
-import com.example.sneakerpuzzshop.domain.usecase.UpdateUserAvatarUseCase
 import com.example.sneakerpuzzshop.utils.others.GoogleSignInHelper
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -35,7 +35,7 @@ class AuthViewModel @Inject constructor(
     private val getUserInformationUseCase: GetUserInformationUseCase,
     private val changePasswordUseCase: ChangePasswordUseCase,
     private val cloudinaryRepositoryImpl: CloudinaryRepositoryImpl,
-    private val updateUserAvatarUseCase: UpdateUserAvatarUseCase
+    private val deleteAccountUseCase: DeleteAccountUseCase
 ) : ViewModel() {
 
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -58,6 +58,9 @@ class AuthViewModel @Inject constructor(
 
     private val _uploadAvatarFlow = MutableStateFlow<Resource<String>?>(null)
     val uploadAvatarFlow: StateFlow<Resource<String>?> = _uploadAvatarFlow.asStateFlow()
+
+    private val _deleteAccount = MutableStateFlow<Resource<Unit>?>(null)
+    val deleteAccount: StateFlow<Resource<Unit>?> = _deleteAccount.asStateFlow()
 
 
     val currentUser: FirebaseUser?
@@ -148,6 +151,11 @@ class AuthViewModel @Inject constructor(
         getUserInformation()
     }
 
+    fun deleteAccount(uid: String) = viewModelScope.launch {
+        _deleteAccount.value = Resource.Loading
+        val result = deleteAccountUseCase(uid)
+        _deleteAccount.value = result
+    }
 
     fun clearLoginFlow() {
         _loginFlow.value = null

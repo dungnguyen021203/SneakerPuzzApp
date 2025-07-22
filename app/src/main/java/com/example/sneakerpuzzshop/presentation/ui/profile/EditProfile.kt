@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -22,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -33,6 +35,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -62,7 +65,8 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.utils.others.bitmapToFile
 import com.example.sneakerpuzzshop.utils.others.uriToFile
-import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -72,16 +76,58 @@ fun EditProfile(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    // Variables
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var showSheet by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
+
+    // State Collector
     val authState by viewModel.userInformation.collectAsState()
     val avatarUploadState by viewModel.uploadAvatarFlow.collectAsState()
+    val deleteState by viewModel.deleteAccount.collectAsState()
 
+    // Get information
     LaunchedEffect(Unit) {
         viewModel.getUserInformation()
     }
-
     var user = (authState as? Resource.Success)?.data
+    val currentUserUid = viewModel.currentUser?.uid
+    LaunchedEffect(avatarUploadState) {
+        when (avatarUploadState) {
+            is Resource.Success -> {
+                val newAvatarUrl = (avatarUploadState as Resource.Success).data
+                viewModel.updateUserAvatarUrl(newAvatarUrl)
+                showToast(context, "Ảnh đã được cập nhật!")
+            }
 
-    val context = LocalContext.current
+            is Resource.Failure -> {
+                showToast(context, "Lỗi upload ảnh")
+            }
+
+            else -> {}
+        }
+    }
+    LaunchedEffect(deleteState) {
+        when (deleteState) {
+            is Resource.Success -> {
+                showToast(context, "Xoá tài khoản thành công!")
+                navController.navigate(ROUTE_LOGIN) {
+                    popUpTo(0) { inclusive = true }
+                }
+            }
+            is Resource.Failure -> {
+                showToast(context, "Lỗi khi xoá tài khoản.")
+            }
+            else -> {}
+        }
+    }
+
+
+
+    // Take picture from camera and Gallery
     var bitmap: Bitmap? by remember { mutableStateOf(null) }
 
     val launcher = rememberLauncherForActivityResult(
@@ -109,27 +155,6 @@ fun EditProfile(
             viewModel.uploadAvatar(file)
         }
     }
-
-    LaunchedEffect(avatarUploadState) {
-        when (avatarUploadState) {
-            is Resource.Success -> {
-                val newAvatarUrl = (avatarUploadState as Resource.Success).data
-                viewModel.updateUserAvatarUrl(newAvatarUrl)
-                showToast(context, "Ảnh đã được cập nhật!")
-            }
-
-            is Resource.Failure -> {
-                showToast(context, "Lỗi upload ảnh")
-            }
-
-            else -> {}
-        }
-    }
-
-
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState()
-    var showSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -246,7 +271,7 @@ fun EditProfile(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable {
-
+                        showDeleteDialog = true
                     },
                 color = Color.Red,
                 textAlign = TextAlign.Center
@@ -298,6 +323,27 @@ fun EditProfile(
                     }
                 }
             }
+            if (showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    title = { Text("Xác nhận xoá tài khoản") },
+                    text = { Text("Bạn có chắc chắn muốn xoá tài khoản này? Hành động này không thể hoàn tác.") },
+                    confirmButton = {
+                        Button(onClick = {
+                            viewModel.deleteAccount(uid = currentUserUid.toString())
+                            showDeleteDialog = false
+                        }) {
+                            Text("Xoá")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDeleteDialog = false }) {
+                            Text("Huỷ")
+                        }
+                    }
+                )
+            }
+
         }
     }
 }

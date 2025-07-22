@@ -42,7 +42,9 @@ class AuthRepositoryImpl @Inject constructor(
     ): Resource<FirebaseUser> {
         return try {
             val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            result?.user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())?.await()
+            result?.user?.updateProfile(
+                UserProfileChangeRequest.Builder().setDisplayName(name).build()
+            )?.await()
             Resource.Success(result.user!!)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -54,7 +56,7 @@ class AuthRepositoryImpl @Inject constructor(
         return try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val authResult = firebaseAuth.signInWithCredential(credential).await()
-            val user = authResult.user?: return Resource.Failure(Exception("User Null"))
+            val user = authResult.user ?: return Resource.Failure(Exception("User Null"))
             Resource.Success(user)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -125,4 +127,13 @@ class AuthRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun deleteAccount(uid: String): Resource<Unit> {
+        return try {
+            firestore.collection("users").document(uid).delete().await()
+            firebaseAuth.currentUser?.delete()?.await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
 }
