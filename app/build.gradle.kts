@@ -103,4 +103,16 @@ dependencies {
         "include" to listOf("*.aar", "*.jar"),
         "exclude" to listOf("")
     )))
+
+    // Retrofit
+    // Network
+    implementation(libs.retrofit2.kotlinx.serialization.converter)
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
+    implementation(libs.kotlinx.serialization.json)
+    implementation (libs.converter.gson)
+
+    // Cloudinary
+    implementation (libs.cloudinary.android.v302)
 }

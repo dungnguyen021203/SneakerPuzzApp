@@ -9,19 +9,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,36 +25,45 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.sneakerpuzzshop.R
+import coil.compose.rememberAsyncImagePainter
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.EditProfileItemRow
+import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
+import com.example.sneakerpuzzshop.utils.others.bitmapToFile
+import com.example.sneakerpuzzshop.utils.others.uriToFile
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,11 +73,63 @@ fun EditProfile(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val authState by viewModel.userInformation.collectAsState()
+    val avatarUploadState by viewModel.uploadAvatarFlow.collectAsState()
+
     LaunchedEffect(Unit) {
         viewModel.getUserInformation()
     }
 
     var user = (authState as? Resource.Success)?.data
+
+    val context = LocalContext.current
+    var bitmap: Bitmap? by remember { mutableStateOf(null) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { takenBitmap ->
+        takenBitmap?.let {
+            bitmap = it
+            val file = bitmapToFile(context, it)
+            viewModel.uploadAvatar(file)
+        }
+    }
+
+    val launchImage = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let {
+            bitmap = if (Build.VERSION.SDK_INT < 28) {
+                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
+            } else {
+                val source = ImageDecoder.createSource(context.contentResolver, it)
+                ImageDecoder.decodeBitmap(source)
+            }
+
+            val file = uriToFile(context, it)
+            viewModel.uploadAvatar(file)
+        }
+    }
+
+    LaunchedEffect(avatarUploadState) {
+        when (avatarUploadState) {
+            is Resource.Success -> {
+                val newAvatarUrl = (avatarUploadState as Resource.Success).data
+                viewModel.updateUserAvatarUrl(newAvatarUrl)
+                showToast(context, "Ảnh đã được cập nhật!")
+            }
+
+            is Resource.Failure -> {
+                showToast(context, "Lỗi upload ảnh")
+            }
+
+            else -> {}
+        }
+    }
+
+
+    val coroutineScope = rememberCoroutineScope()
+    val sheetState = rememberModalBottomSheetState()
+    var showSheet by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -106,20 +163,33 @@ fun EditProfile(
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(Color.White)
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.pro5),
-                    contentDescription = "Profile image",
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(8.dp)
-                )
+                if (avatarUploadState == Resource.Loading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(8.dp)
+                            .align(Alignment.CenterHorizontally)
+                    )
+                } else {
+                    Image(
+                        painter = rememberAsyncImagePainter(user?.avatar),
+                        contentDescription = "Profile image",
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(8.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
 
             Text(
                 text = "Change Profile Picture",
                 fontSize = 16.sp,
                 color = Color.Gray,
-                modifier = Modifier.clickable{}
+                modifier = Modifier.clickable {
+                    showSheet = true
+                }
             )
 
             Spacer(modifier = Modifier.height(5.dp))
@@ -135,7 +205,12 @@ fun EditProfile(
 
             EditProfileItemRow("Name", user?.name.toString(), true, navController)
 
-            EditProfileItemRow("Username", viewModel.currentUser?.email.toString(), false, navController)
+            EditProfileItemRow(
+                "Username",
+                viewModel.currentUser?.email.toString(),
+                false,
+                navController
+            )
 
             EditProfileItemRow("Password", "*********", true, navController)
 
@@ -148,7 +223,12 @@ fun EditProfile(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            EditProfileItemRow("UserID", viewModel.currentUser?.uid.toString(), false, navController)
+            EditProfileItemRow(
+                "UserID",
+                viewModel.currentUser?.uid.toString(),
+                false,
+                navController
+            )
 
             EditProfileItemRow("E-mail", user?.email.toString(), false, navController)
 
@@ -163,207 +243,61 @@ fun EditProfile(
             Text(
                 text = "Delete Account",
                 fontSize = 16.sp,
-                modifier = Modifier.fillMaxWidth().clickable{
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
 
-                },
+                    },
                 color = Color.Red,
                 textAlign = TextAlign.Center
             )
-        }
-    }
-}
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProfilePRe() {
-
-    var showDialog by remember { mutableStateOf(false) }
-
-    // upload to fb storage
-    var isUploading by remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-    var bitmap: Bitmap? by remember { mutableStateOf<Bitmap?>(null) }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) {
-        if (it != null) {
-            bitmap = it
-        }
-    }
-
-    val launchImage = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
-        uri?.let {
-            bitmap = if (Build.VERSION.SDK_INT < 28) {
-                MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-            } else {
-                val source = ImageDecoder.createSource(context.contentResolver, it)
-                ImageDecoder.decodeBitmap(source)
-            }
-        }
-    }
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Profile", fontWeight = FontWeight.Bold)
-                },
-                navigationIcon = {
-                    IconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = 16.dp)
-        ) {
-            Box {
-//                if (bitmap != null) {
-//                    Image(
-//                        bitmap = bitmap?.asImageBitmap()!!,
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clip(CircleShape)
-//                            .size(200.dp)
-//                    )
-//                } else {
-//                    Image(
-//                        painterResource(id = R.drawable.ic_google_logo),
-//                        contentDescription = null,
-//                        contentScale = ContentScale.Crop,
-//                        modifier = Modifier
-//                            .fillMaxWidth()
-//                            .clip(CircleShape)
-//                            .size(200.dp)
-//                    )
-//                }
-
-                Box(
-                    modifier = Modifier
-                        .padding(top = 160.dp, start = 200.dp)
+            if (showSheet) {
+                ModalBottomSheet(
+                    onDismissRequest = { showSheet = false },
+                    sheetState = sheetState
                 ) {
-                    Image(
-                        painterResource(id = R.drawable.outline_photo_camera_24),
-                        contentDescription = null,
+                    Column(
                         modifier = Modifier
-                            .clip(CircleShape)
-                            .size(50.dp)
-                            .clickable { showDialog = true }
-                    )
-                }
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 20.dp)
-            ) {
-                Button(onClick = {
-//                    isUploading = true
-//                    bitmap.value.let { bitmap ->
-//                        uploadToFirebase(bitmap, context as ComponentActivity) { success ->
-//                            isUploading = false
-//                            if (success) {
-//                                showToast(context, "Success")
-//                            } else {
-//                                showToast(context, "failed")
-//                            }
-//                        }
-//                    }
-                }) {
-                    Text(text = "Upload Image", fontSize = 30.sp, fontWeight = FontWeight.Bold)
-                }
-            }
-
-            // Alert Dialog
-            if (showDialog == true) {
-                Column(
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            bottom = 10.dp
-                        )
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                        modifier = Modifier
-                            .width(300.dp)
-                            .height(100.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.Red)
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Column(modifier = Modifier.padding(start = 60.dp)) {
-                            Image(
-                                painter = painterResource(R.drawable.outline_photo_camera_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clickable {
-                                        launcher.launch()
-                                        showDialog = false
-                                    }
-                            )
-                            Text(text = "Camera", color = Color.White)
+                        Text(
+                            text = "Choose Image Source",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 18.sp,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+
+                        Button(
+                            onClick = {
+                                coroutineScope.launch {
+                                    sheetState.hide()
+                                }
+                                launcher.launch() // gọi camera
+                                showSheet = false
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text("Take Photo")
                         }
 
-                        Column(modifier = Modifier.padding(start = 60.dp)) {
-                            Image(
-                                painter = painterResource(R.drawable.outline_photo_camera_24),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(50.dp)
-                                    .clickable {
-                                        launchImage.launch("image/*")
-                                        showDialog = false
-                                    }
-                            )
-                            Text(text = "Gallery", color = Color.White)
-                        }
-
-                        Column(modifier = Modifier.padding(start = 50.dp, bottom = 80.dp)) {
-                            Text(text = "X", color = Color.Black, modifier = Modifier.clickable {
-                                showDialog = false
-                            })
+                        Button(
+                            onClick = {
+                                coroutineScope.launch { sheetState.hide() }
+                                launchImage.launch("image/*") // gọi thư viện
+                                showSheet = false
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text("Choose from Gallery")
                         }
                     }
                 }
             }
         }
     }
-    //private fun uploadToFirebase(
-//    bitmap: Bitmap,
-//    context: ComponentActivity,
-//    callback: (Boolean) -> Unit
-//) {
-//    val storageRef = Firebase.storage.reference
-//    val imageRef = storageRef.child("images/{$bitmap")
-//
-//    val baos = ByteArrayOutputStream()
-//    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-//
-//    val imageData = baos.toByteArray()
-//    imageRef.putBytes(imageData).addon {
-//
-//    }
-//}
 }

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.data.repository.CloudinaryRepositoryImpl
 import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
 import com.example.sneakerpuzzshop.domain.usecase.ChangePasswordUseCase
@@ -12,6 +13,7 @@ import com.example.sneakerpuzzshop.domain.usecase.GetUserInformationUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.LoginUseCase
 import com.example.sneakerpuzzshop.domain.usecase.SignupUseCase
+import com.example.sneakerpuzzshop.domain.usecase.UpdateUserAvatarUseCase
 import com.example.sneakerpuzzshop.utils.others.GoogleSignInHelper
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +33,9 @@ class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val forgetPasswordUseCase: ForgetPasswordUseCase,
     private val getUserInformationUseCase: GetUserInformationUseCase,
-    private val changePasswordUseCase: ChangePasswordUseCase
+    private val changePasswordUseCase: ChangePasswordUseCase,
+    private val cloudinaryRepositoryImpl: CloudinaryRepositoryImpl,
+    private val updateUserAvatarUseCase: UpdateUserAvatarUseCase
 ) : ViewModel() {
 
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -50,6 +55,10 @@ class AuthViewModel @Inject constructor(
 
     private val _changePassword = MutableStateFlow<Resource<Unit>?>(null)
     val changePassword: StateFlow<Resource<Unit>?> = _changePassword.asStateFlow()
+
+    private val _uploadAvatarFlow = MutableStateFlow<Resource<String>?>(null)
+    val uploadAvatarFlow: StateFlow<Resource<String>?> = _uploadAvatarFlow.asStateFlow()
+
 
     val currentUser: FirebaseUser?
         get() = authRepository.currentUser
@@ -123,6 +132,22 @@ class AuthViewModel @Inject constructor(
         val result = changePasswordUseCase(oldPassword, newPassword)
         _changePassword.value = result
     }
+
+    fun uploadAvatar(file: File) = viewModelScope.launch {
+        _uploadAvatarFlow.value = Resource.Loading
+        val result = cloudinaryRepositoryImpl.uploadAvatar(file)
+        _uploadAvatarFlow.value = result
+    }
+
+    fun updateUserAvatarUrl(newUrl: String) = viewModelScope.launch {
+        val uid = currentUser?.uid ?: return@launch
+        val userInfo = userInformation.value as? Resource.Success ?: return@launch
+        val updatedUser = userInfo.data.copy(avatar = newUrl)
+
+        authRepository.updateUser(uid, updatedUser)
+        getUserInformation()
+    }
+
 
     fun clearLoginFlow() {
         _loginFlow.value = null

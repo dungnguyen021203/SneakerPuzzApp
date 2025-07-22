@@ -20,4 +20,6 @@ interface AuthRepository {
     suspend fun getUserInformation(): Resource<UserModel>
 
     suspend fun changePassword(oldPassword: String, newPassword: String): Resource<Unit>
+
+    suspend fun updateUser(uid: String, updatedUser: UserModel): Resource<Unit>
 }

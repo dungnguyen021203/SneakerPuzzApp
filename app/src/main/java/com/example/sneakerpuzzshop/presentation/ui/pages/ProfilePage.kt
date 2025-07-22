@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.OrderItem
@@ -106,15 +107,14 @@ fun ProfilePage(
                         )
                     }
 
-                    // TODO()
                     item {
                         Card(
                             shape = RoundedCornerShape(100.dp),
                             elevation = CardDefaults.cardElevation(6.dp),
                             colors = CardDefaults.cardColors(Color.White)
                         ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.pro5),
+                            AsyncImage(
+                                model = user?.avatar,
                                 contentDescription = "Profile image",
                                 modifier = Modifier
                                     .size(130.dp)

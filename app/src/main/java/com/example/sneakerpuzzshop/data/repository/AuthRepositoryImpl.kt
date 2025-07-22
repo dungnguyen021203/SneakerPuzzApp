@@ -10,11 +10,13 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : AuthRepository {
 
     override val currentUser: FirebaseUser?
@@ -113,4 +115,14 @@ class AuthRepositoryImpl @Inject constructor(
             Resource.Failure(e)
         }
     }
+
+    override suspend fun updateUser(uid: String, updatedUser: UserModel): Resource<Unit> {
+        return try {
+            firestore.collection("users").document(uid).set(updatedUser).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Failure(e)
+        }
+    }
+
 }

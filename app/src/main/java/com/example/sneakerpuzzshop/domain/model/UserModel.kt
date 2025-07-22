@@ -6,5 +6,6 @@ data class UserModel(
     val email: String = "",
     val cart: List<CartItemModel> = emptyList(),
     val phoneNumber: String = "",
-    val address: String = ""
+    val address: String = "",
+    val avatar: String = ""
 )
