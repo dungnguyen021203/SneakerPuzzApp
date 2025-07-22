@@ -26,8 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -39,10 +37,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,18 +54,123 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.R
+import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.EditProfileItemRow
-import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
+import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfile(modifier: Modifier = Modifier, navController: NavHostController) {
+fun EditProfile(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    viewModel: AuthViewModel = hiltViewModel()
+) {
+    val authState by viewModel.userInformation.collectAsState()
+    LaunchedEffect(Unit) {
+        viewModel.getUserInformation()
+    }
 
+    var user = (authState as? Resource.Success)?.data
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "Edit Profile", fontWeight = FontWeight.Bold)
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navController.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Back"
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp)
+        ) {
+            Card(
+                shape = RoundedCornerShape(100.dp),
+                elevation = CardDefaults.cardElevation(6.dp),
+                colors = CardDefaults.cardColors(Color.White)
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.pro5),
+                    contentDescription = "Profile image",
+                    modifier = Modifier
+                        .size(100.dp)
+                        .padding(8.dp)
+                )
+            }
+
+            Text(
+                text = "Change Profile Picture",
+                fontSize = 16.sp,
+                color = Color.Gray,
+                modifier = Modifier.clickable{}
+            )
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            HorizontalDivider()
+
+            Text(
+                text = "Profile Information",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            EditProfileItemRow("Name", user?.name.toString(), true)
+
+            EditProfileItemRow("Username", viewModel.currentUser?.email.toString(), false)
+
+            HorizontalDivider()
+
+            Text(
+                text = "Personal Information",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            EditProfileItemRow("UserID", viewModel.currentUser?.uid.toString(), false)
+
+            EditProfileItemRow("E-mail", user?.email.toString(), false)
+
+            EditProfileItemRow("Phone", user?.phoneNumber.toString(), true)
+
+            HorizontalDivider()
+
+            Spacer(modifier = Modifier.height(5.dp))
+
+            Text(
+                text = "Delete Account",
+                fontSize = 16.sp,
+                modifier = Modifier.fillMaxWidth().clickable{
+
+                },
+                color = Color.Red,
+                textAlign = TextAlign.Center
+            )
+        }
+    }
 }
 
 
@@ -125,27 +231,27 @@ fun ProfilePRe() {
                 .padding(horizontal = 16.dp)
         ) {
             Box {
-                if (bitmap != null) {
-                    Image(
-                        bitmap = bitmap?.asImageBitmap()!!,
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape)
-                            .size(200.dp)
-                    )
-                } else {
-                    Image(
-                        painterResource(id = R.drawable.ic_google_logo),
-                        contentDescription = null,
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(CircleShape)
-                            .size(200.dp)
-                    )
-                }
+//                if (bitmap != null) {
+//                    Image(
+//                        bitmap = bitmap?.asImageBitmap()!!,
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clip(CircleShape)
+//                            .size(200.dp)
+//                    )
+//                } else {
+//                    Image(
+//                        painterResource(id = R.drawable.ic_google_logo),
+//                        contentDescription = null,
+//                        contentScale = ContentScale.Crop,
+//                        modifier = Modifier
+//                            .fillMaxWidth()
+//                            .clip(CircleShape)
+//                            .size(200.dp)
+//                    )
+//                }
 
                 Box(
                     modifier = Modifier
@@ -260,85 +366,4 @@ fun ProfilePRe() {
 //
 //    }
 //}
-}
-
-@Preview(showBackground = true)
-@Composable
-fun EditPReview() {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        Text(
-            text = "Edit Profile",
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF6E6E6E)
-        )
-
-        Card(
-            shape = RoundedCornerShape(100.dp),
-            elevation = CardDefaults.cardElevation(6.dp),
-            colors = CardDefaults.cardColors(Color.White)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.pro5),
-                contentDescription = "Profile image",
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(8.dp)
-            )
-        }
-
-        Text(
-            text = "Change Profile Picture",
-            fontSize = 16.sp,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        HorizontalDivider()
-
-        Text(
-            text = "Profile Information",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        EditProfileItemRow("Name", "Dung Nguyen")
-
-        EditProfileItemRow("Username", "dungcaptainamerican@gmail.com")
-
-        HorizontalDivider()
-
-        Text(
-            text = "Personal Information",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        EditProfileItemRow("UserID", "asNjQCUshkefXaYOwDnpRZR7pyp2")
-
-        EditProfileItemRow("E-mail", "dungcaptainamerican@gmail.com")
-
-        EditProfileItemRow("Phone", "0348242935")
-
-        HorizontalDivider()
-
-        Spacer(modifier = Modifier.height(5.dp))
-
-        Text(
-            text = "Delete Account",
-            fontSize = 16.sp,
-            modifier = Modifier.fillMaxWidth(),
-            color = Color.Red,
-            textAlign = TextAlign.Center
-        )
-    }
 }

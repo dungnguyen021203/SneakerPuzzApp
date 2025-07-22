@@ -68,6 +68,10 @@ fun ProfilePage(
     val authState by viewModel.userInformation.collectAsState()
     val context = LocalContext.current
 
+    LaunchedEffect(Unit) {
+        viewModel.getUserInformation()
+    }
+
     authState.let {
         when (it) {
             is Resource.Failure -> {
@@ -123,7 +127,7 @@ fun ProfilePage(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = user?.name.toString(),
-                                fontSize = 26.sp,
+                                fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF6E6E6E)
                             )
@@ -139,7 +143,7 @@ fun ProfilePage(
                         Text(
                             text = "My Orders",
                             fontWeight = FontWeight.SemiBold,
-                            fontSize = 22.sp,
+                            fontSize = 20.sp,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -214,7 +218,7 @@ fun ProfilePage(
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     text = "Edit Profile",
-                                    fontSize = 18.sp,
+                                    fontSize = 16.sp,
                                     fontWeight = FontWeight.SemiBold
                                 )
                             }
@@ -247,7 +251,7 @@ fun ProfilePage(
                                     contentDescription = null,
                                     tint = Color(0xFF6E6E6E)
                                 )
-                                Text(text = "Sign Out", fontSize = 18.sp, color = Color(0xFF6E6E6E))
+                                Text(text = "Sign Out", fontSize = 16.sp, color = Color(0xFF6E6E6E))
                             }
                         }
                     }
