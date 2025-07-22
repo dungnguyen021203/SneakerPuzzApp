@@ -15,14 +15,20 @@ import com.example.sneakerpuzzshop.presentation.ui.category.CategoryProductsPage
 import com.example.sneakerpuzzshop.presentation.ui.pages.CheckoutPage
 import com.example.sneakerpuzzshop.presentation.ui.product.ProductDetails
 import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfile
-import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileField
+import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldAddress
+import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldName
+import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldPassword
+import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldPhone
 import com.example.sneakerpuzzshop.presentation.ui.review.ProductReview
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
 import com.example.sneakerpuzzshop.presentation.ui.thankyou.ThankyouPage
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CATEGORY_PRODUCTS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CHECKOUT
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
-import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_ADDRESS
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_NAME
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_PASSWORD
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_PHONE
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
@@ -80,8 +86,17 @@ fun AppNavHost(
         composable(ROUTE_EDIT_PROFILE) {
             EditProfile(navController = navController)
         }
-        composable(ROUTE_EDIT_PROFILE_FIELD) {
-            EditProfileField(navController = navController)
+        composable(ROUTE_EDIT_PROFILE_FIELD_NAME) {
+            EditProfileFieldName(navController = navController)
+        }
+        composable(ROUTE_EDIT_PROFILE_FIELD_PHONE) {
+            EditProfileFieldPhone(navController = navController)
+        }
+        composable(ROUTE_EDIT_PROFILE_FIELD_ADDRESS) {
+            EditProfileFieldAddress(navController = navController)
+        }
+        composable(ROUTE_EDIT_PROFILE_FIELD_PASSWORD) {
+            EditProfileFieldPassword(navController = navController)
         }
     }
 }

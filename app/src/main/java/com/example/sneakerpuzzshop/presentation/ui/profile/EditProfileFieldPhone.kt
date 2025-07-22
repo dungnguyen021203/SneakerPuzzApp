@@ -11,6 +11,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.rounded.Person
+import androidx.compose.material.icons.rounded.Phone
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,17 +50,17 @@ import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditProfileField(
+fun EditProfileFieldPhone(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     profileViewModel: ProfileViewModel = hiltViewModel(),
     authViewModel: AuthViewModel = hiltViewModel()
 ) {
 
-    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var userId = authViewModel.currentUser?.uid.toString()
 
-    val profileState = profileViewModel.editUserName.collectAsState()
+    val profileState = profileViewModel.editUserPhone.collectAsState()
 
     val context = LocalContext.current
 
@@ -67,7 +68,7 @@ fun EditProfileField(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Change Name", fontWeight = FontWeight.Bold) /////////////////
+                    Text(text = "Change Phone Number", fontWeight = FontWeight.Bold)
                 },
                 navigationIcon = {
                     IconButton(onClick = {
@@ -91,25 +92,25 @@ fun EditProfileField(
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
-                text = "Use real name for easier verification. This name will appear on multiple pages",
+                text = "Use real phone for easier verification. This phone number will appear on multiple pages",
                 fontSize = 16.sp,
                 color = Color.Gray
             )
             TextField(
-                value = name,
+                value = phone,
                 onValueChange = {
-                    name = it
+                    phone = it
                 },
                 label = {
-                    Text(text = "Name")
+                    Text(text = "Phone")
                 },
                 leadingIcon = {
-                    Icon(Icons.Rounded.Person, contentDescription = "Account Leading Icon")
+                    Icon(Icons.Rounded.Phone, contentDescription = "Account Leading Icon")
                 },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.None,
                     autoCorrectEnabled = false,
-                    keyboardType = KeyboardType.Email,
+                    keyboardType = KeyboardType.Phone,
                     imeAction = ImeAction.Done,
                 ),
                 shape = RoundedCornerShape(8.dp),
@@ -123,7 +124,7 @@ fun EditProfileField(
 
             Button(
                 onClick = {
-                    profileViewModel.updateUserName(userId = userId, userName = name)
+                    profileViewModel.updateUserPhone(userId = userId, userPhone = phone)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

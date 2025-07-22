@@ -5,6 +5,7 @@ import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
 import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.Firebase
+import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -87,6 +88,26 @@ class AuthRepositoryImpl @Inject constructor(
                 ?: return Resource.Failure(Exception("User data not found"))
 
             Resource.Success(user)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun changePassword(
+        oldPassword: String,
+        newPassword: String
+    ): Resource<Unit> {
+        return try {
+            val user = firebaseAuth.currentUser
+            val email = firebaseAuth.currentUser?.email
+            if (email.isNullOrEmpty()) {
+                return Resource.Failure(Exception("Email người dùng không tồn tại"))
+            }
+            val credential = EmailAuthProvider.getCredential(email, oldPassword)
+            user?.reauthenticate(credential)?.await()
+            user?.updatePassword(newPassword)?.await()
+            Resource.Success(Unit)
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Failure(e)

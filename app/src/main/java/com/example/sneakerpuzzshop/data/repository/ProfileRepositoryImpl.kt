@@ -18,4 +18,30 @@ class ProfileRepositoryImpl @Inject constructor(
             Resource.Failure(e)
         }
     }
+
+    override suspend fun editUserPhone(
+        userId: String,
+        userPhone: String
+    ): Resource<Unit> {
+        return try {
+            firestore.collection("users").document(userId).update("phoneNumber", userPhone).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun editUserAddress(
+        userId: String,
+        userAddress: String
+    ): Resource<Unit> {
+        return try {
+            firestore.collection("users").document(userId).update("address", userAddress).await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure(e)
+        }
+    }
 }

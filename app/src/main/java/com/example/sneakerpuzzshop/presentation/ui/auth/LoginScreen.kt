@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material.icons.rounded.Lock
 import androidx.compose.material3.*
@@ -102,10 +104,10 @@ fun LoginScreen(viewModel: AuthViewModel?, navController: NavController) {
             ),
             trailingIcon = {
                 val image = if (passwordVisible)
-                    painterResource(id = R.drawable.visible) else
-                    painterResource(id = R.drawable.visibility)
+                    Icons.Default.Visibility else
+                    Icons.Default.VisibilityOff
                 Icon(
-                    painter = image,
+                    imageVector = image,
                     contentDescription = "Password Trailing Icon",
                     modifier = Modifier
                         .size(24.dp)

@@ -22,7 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD
+import com.example.sneakerpuzzshop.utils.ui.*
 
 @Composable
 fun EditProfileItemRow(label: String, content: String, copy: Boolean, navController: NavHostController) {
@@ -61,7 +61,12 @@ fun EditProfileItemRow(label: String, content: String, copy: Boolean, navControl
                 if (!copy) {
                     clipboardManager.setText(AnnotatedString(content))
                 } else {
-                    navController.navigate(ROUTE_EDIT_PROFILE_FIELD)
+                    when(label) {
+                        "Name" -> navController.navigate(ROUTE_EDIT_PROFILE_FIELD_NAME)
+                        "Password" -> navController.navigate(ROUTE_EDIT_PROFILE_FIELD_PASSWORD)
+                        "Phone" -> navController.navigate(ROUTE_EDIT_PROFILE_FIELD_PHONE)
+                        "Address" -> navController.navigate(ROUTE_EDIT_PROFILE_FIELD_ADDRESS)
+                    }
                 }
             }
         )

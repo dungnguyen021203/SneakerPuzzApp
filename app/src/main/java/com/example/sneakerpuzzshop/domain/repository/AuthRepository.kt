@@ -18,4 +18,6 @@ interface AuthRepository {
     suspend fun resetPassword(email: String): Resource<Unit>
 
     suspend fun getUserInformation(): Resource<UserModel>
+
+    suspend fun changePassword(oldPassword: String, newPassword: String): Resource<Unit>
 }

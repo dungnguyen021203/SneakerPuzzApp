@@ -137,6 +137,8 @@ fun EditProfile(
 
             EditProfileItemRow("Username", viewModel.currentUser?.email.toString(), false, navController)
 
+            EditProfileItemRow("Password", "*********", true, navController)
+
             HorizontalDivider()
 
             Text(

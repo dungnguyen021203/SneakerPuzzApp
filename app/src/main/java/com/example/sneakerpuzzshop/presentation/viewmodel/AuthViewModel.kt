@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.UserModel
 import com.example.sneakerpuzzshop.domain.repository.AuthRepository
+import com.example.sneakerpuzzshop.domain.usecase.ChangePasswordUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ForgetPasswordUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetUserInformationUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GoogleLoginUseCase
@@ -28,7 +29,8 @@ class AuthViewModel @Inject constructor(
     private val googleSignInHelper: GoogleSignInHelper,
     private val authRepository: AuthRepository,
     private val forgetPasswordUseCase: ForgetPasswordUseCase,
-    private val getUserInformationUseCase: GetUserInformationUseCase
+    private val getUserInformationUseCase: GetUserInformationUseCase,
+    private val changePasswordUseCase: ChangePasswordUseCase
 ) : ViewModel() {
 
     private val _loginFlow = MutableStateFlow<Resource<FirebaseUser>?>(null)
@@ -45,6 +47,9 @@ class AuthViewModel @Inject constructor(
 
     private val _userInformation = MutableStateFlow<Resource<UserModel>>(Resource.Loading)
     val userInformation: StateFlow<Resource<UserModel>> = _userInformation
+
+    private val _changePassword = MutableStateFlow<Resource<Unit>?>(null)
+    val changePassword: StateFlow<Resource<Unit>?> = _changePassword.asStateFlow()
 
     val currentUser: FirebaseUser?
         get() = authRepository.currentUser
@@ -111,6 +116,12 @@ class AuthViewModel @Inject constructor(
         _resetPasswordFlow.value = Resource.Loading
         val result = forgetPasswordUseCase(email)
         _resetPasswordFlow.value = result
+    }
+
+    fun changePassword(oldPassword: String, newPassword: String) = viewModelScope.launch {
+        _changePassword.value = Resource.Loading
+        val result = changePasswordUseCase(oldPassword, newPassword)
+        _changePassword.value = result
     }
 
     fun clearLoginFlow() {

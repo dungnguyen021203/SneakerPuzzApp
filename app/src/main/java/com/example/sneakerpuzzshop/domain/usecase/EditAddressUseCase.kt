@@ -4,12 +4,12 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.repository.ProfileRepository
 import javax.inject.Inject
 
-class EditUserNameUseCase @Inject constructor(
+class EditAddressUseCase @Inject constructor(
     private val profileRepository: ProfileRepository
 ) {
-    suspend operator fun invoke(userId: String, userName: String): Resource<Unit> {
-        if (userName.isBlank())
+    suspend operator fun invoke(userId: String, userAddress: String): Resource<Unit> {
+        if (userAddress.isBlank())
             return Resource.Failure(Exception("Không được để trống field"))
-        return profileRepository.editUserName(userId, userName)
+        return profileRepository.editUserAddress(userId, userAddress)
     }
 }
