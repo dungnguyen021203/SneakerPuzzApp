@@ -156,6 +156,8 @@ fun EditProfile(
 
             EditProfileItemRow("Phone", user?.phoneNumber.toString(), true)
 
+            EditProfileItemRow("Address", user?.address.toString(), true)
+
             HorizontalDivider()
 
             Spacer(modifier = Modifier.height(5.dp))

@@ -4,11 +4,13 @@ import com.example.sneakerpuzzshop.data.repository.CartRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.HomeRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.OrderRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.ProductRepositoryImpl
+import com.example.sneakerpuzzshop.data.repository.ProfileRepositoryImpl
 import com.example.sneakerpuzzshop.data.repository.ReviewRepositoryImpl
 import com.example.sneakerpuzzshop.domain.repository.CartRepository
 import com.example.sneakerpuzzshop.domain.repository.HomeRepository
 import com.example.sneakerpuzzshop.domain.repository.OrderRepository
 import com.example.sneakerpuzzshop.domain.repository.ProductRepository
+import com.example.sneakerpuzzshop.domain.repository.ProfileRepository
 import com.example.sneakerpuzzshop.domain.repository.ReviewRepository
 import dagger.Binds
 import dagger.Module
@@ -32,4 +34,7 @@ interface RepositoryModule {
 
     @Binds
     fun bindOrderRepository(orderRepositoryImpl: OrderRepositoryImpl): OrderRepository
+
+    @Binds
+    fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 }
