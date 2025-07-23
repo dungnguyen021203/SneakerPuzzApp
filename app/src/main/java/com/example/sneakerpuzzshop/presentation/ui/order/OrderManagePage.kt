@@ -1,20 +1,20 @@
 package com.example.sneakerpuzzshop.presentation.ui.order
 
-import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,403 +24,144 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import com.example.sneakerpuzzshop.common.Resource
+import com.example.sneakerpuzzshop.domain.model.OrderModel
+import com.example.sneakerpuzzshop.presentation.components.showToast
+import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.OrderViewModel
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-private fun OrderPrev() {
-    val list = listOf<String>(
-        "Pending",
-        "Delivered",
-        "Processing",
-        "Cancelled",
-        "Pending",
-        "Delivered",
-        "Processing",
-        "Cancelled"
-    )
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "My Orders", fontWeight = FontWeight.Bold)
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        TODO()
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(list) { item ->
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(40.dp),
-                        shape = RoundedCornerShape(30.dp),
-                        elevation = CardDefaults.cardElevation(1.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = if (item == "Processing") Color.Red else Color(0xFFF0F0F0),
-                            contentColor = if (item == "Processing") Color.White else Color.Black
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(horizontal = 20.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
-                        ) {
-                            Text(text = item, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
-                        }
-                    }
-                }
-            }
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Order No: 19451655",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(text = "12-5-2025", fontSize = 16.sp, color = Color.Gray)
-                    }
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Gray,
-                                )
-                            ) { append(text = "Tracking number: ") }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) { append(text = "UW34567890") }
-                        }
-                    )
+fun OrderManagePage(
+    modifier: Modifier = Modifier,
+    orderStatus: String,
+    navController: NavHostController,
+    orderViewModel: OrderViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
+    val userId = authViewModel.currentUser?.uid
+    val orderState by orderViewModel.order.collectAsState()
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        orderViewModel.getOrder(userId.toString(), orderStatus)
+    }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                    )
-                                ) { append(text = "Quantity: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "3") }
-                            },
-                        )
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                    )
-                                ) { append(text = "Total amount: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "5.689.000đ") }
-                            },
-                        )
-                    }
+    var isChoosing by remember { mutableStateOf(orderStatus) }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth().padding(top = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = {},
-                            modifier = Modifier
-                                .height(36.dp),
-                            shape = RoundedCornerShape(30.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Black
-                            ),
-                            border = BorderStroke(1.dp, color = Color.Black)
-                        ) {
-                            Text("Details", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
-                        }
-                        Text("Pending", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Green)
-                    }
+    orderState.let {
+        when (it) {
+            is Resource.Failure -> {
+                LaunchedEffect(orderState) {
+                    showToast(context = context, message = it.exception.message.toString())
                 }
             }
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Order No: 19451655",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(text = "12-5-2025", fontSize = 16.sp, color = Color.Gray)
-                    }
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Gray,
-                                )
-                            ) { append(text = "Tracking number: ") }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) { append(text = "UW34567890") }
-                        }
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                    )
-                                ) { append(text = "Quantity: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "3") }
+            is Resource.Loading -> LoadingCircle()
+            is Resource.Success<*> -> {
+                val orderList = (orderState as Resource.Success<List<OrderModel>>).data
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(text = "My Orders", fontWeight = FontWeight.Bold)
                             },
-                        )
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    navController.popBackStack()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back"
                                     )
-                                ) { append(text = "Total amount: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "5.689.000đ") }
-                            },
+                                }
+                            }
                         )
                     }
-
-                    Row(
+                ) { innerPadding ->
+                    Column(
                         modifier = Modifier
-                            .fillMaxWidth().padding(top = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
-                        Button(
-                            onClick = {},
-                            modifier = Modifier
-                                .height(36.dp),
-                            shape = RoundedCornerShape(30.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Black
-                            ),
-                            border = BorderStroke(1.dp, color = Color.Black)
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Text("Details", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            items(ORDER_STATUS_LIST) { item ->
+                                Card(
+                                    modifier = Modifier
+                                        .wrapContentWidth()
+                                        .height(40.dp)
+                                        .clip(RoundedCornerShape(30.dp))
+                                        .clickable {
+                                            isChoosing = item
+                                            navController.navigate(ROUTE_ORDER + item) {
+                                                popUpTo(ROUTE_ORDER + orderStatus) {
+                                                    inclusive = true
+                                                }
+                                            }
+
+                                        },
+                                    elevation = CardDefaults.cardElevation(1.dp),
+                                    colors = CardDefaults.cardColors(
+                                        containerColor = if (isChoosing == item) Color.Red else Color(
+                                            0xFFF0F0F0
+                                        ),
+                                        contentColor = if (isChoosing == item) Color.White else Color.Black
+                                    )
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .padding(horizontal = 20.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = item.lowercase()
+                                                .replaceFirstChar { it.uppercase() },
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
                         }
-                        Text("Pending", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Green)
-                    }
-                }
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "Order No: 19451655",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Text(text = "12-5-2025", fontSize = 16.sp, color = Color.Gray)
-                    }
-                    Text(
-                        buildAnnotatedString {
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Gray,
-                                )
-                            ) { append(text = "Tracking number: ") }
-                            withStyle(
-                                style = SpanStyle(
-                                    fontSize = 16.sp,
-                                    color = Color.Black,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            ) { append(text = "UW34567890") }
-                        }
-                    )
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                    )
-                                ) { append(text = "Quantity: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "3") }
-                            },
-                        )
-                        Text(
-                            buildAnnotatedString {
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Gray,
-                                    )
-                                ) { append(text = "Total amount: ") }
-                                withStyle(
-                                    style = SpanStyle(
-                                        fontSize = 16.sp,
-                                        color = Color.Black,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                ) { append(text = "5.689.000đ") }
-                            },
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth().padding(top = 5.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Button(
-                            onClick = {},
-                            modifier = Modifier
-                                .height(36.dp),
-                            shape = RoundedCornerShape(30.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.White,
-                                contentColor = Color.Black
-                            ),
-                            border = BorderStroke(1.dp, color = Color.Black)
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            modifier = Modifier.fillMaxSize()
                         ) {
-                            Text("Details", fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                            items(orderList) { order ->
+                                OrderCard(order = order)
+                            }
                         }
-                        Text("Pending", fontSize = 14.sp, fontWeight = FontWeight.SemiBold, color = Color.Green)
+
                     }
                 }
             }
         }
     }
+
+
 }

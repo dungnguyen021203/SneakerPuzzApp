@@ -170,7 +170,7 @@ fun ProfilePage(
                                 color = Color.Blue,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0].uppercase()
+                                navDestination = ORDER_STATUS_LIST[0]
                             )
                             OrderItem(
                                 icon = Icons.Default.LocalShipping,
@@ -178,7 +178,7 @@ fun ProfilePage(
                                 color = Color(0xFFFFC107),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[1].uppercase()
+                                navDestination = ORDER_STATUS_LIST[1]
                             )
                             OrderItem(
                                 icon = Icons.Default.ShoppingCart,
@@ -186,7 +186,7 @@ fun ProfilePage(
                                 color = Color(0xFFFF66C4),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[2].uppercase()
+                                navDestination = ORDER_STATUS_LIST[2]
                             )
                         }
                     }
@@ -202,7 +202,7 @@ fun ProfilePage(
                                 color = Color.Green,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[3].uppercase()
+                                navDestination = ORDER_STATUS_LIST[3]
                             )
                             OrderItem(
                                 icon = Icons.Default.Favorite,
@@ -210,7 +210,7 @@ fun ProfilePage(
                                 color = Color.Red,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0].uppercase() //TODO(): To another page
+                                navDestination = ORDER_STATUS_LIST[0] //TODO(): To another page
                             )
                             OrderItem(
                                 icon = Icons.AutoMirrored.Filled.HelpCenter,
@@ -218,7 +218,7 @@ fun ProfilePage(
                                 color = Color(0XFFCB6CE6),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0].uppercase() //TODO(): To support page
+                                navDestination = ORDER_STATUS_LIST[0] //TODO(): To support page
                             )
                         }
                     }
