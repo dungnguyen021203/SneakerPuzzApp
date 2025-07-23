@@ -6,6 +6,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.domain.usecase.AddToOrderUseCase
+import com.example.sneakerpuzzshop.domain.usecase.GetOrderFromUserUseCase
 import com.example.sneakerpuzzshop.utils.others.BillingResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrderViewModel @Inject constructor(
-    private val addToOrderUseCase: AddToOrderUseCase
+    private val addToOrderUseCase: AddToOrderUseCase,
+    private val getOrderFromUserUseCase: GetOrderFromUserUseCase
 ): ViewModel() {
     private val _order = MutableStateFlow<Resource<List<OrderModel>>>(Resource.Loading)
     val order: StateFlow<Resource<List<OrderModel>>> = _order
@@ -34,6 +36,16 @@ class OrderViewModel @Inject constructor(
             } catch (e: Exception) {
                 Resource.Failure(e)
             }
+        }
+    }
+
+    fun getOrder(userId: String, orderStatus: String) = viewModelScope.launch {
+        try {
+            _order.value = Resource.Loading
+            val result = getOrderFromUserUseCase(userId, orderStatus)
+            _order.value = Resource.Success(result)
+        } catch (e: Exception) {
+            _order.value = Resource.Failure(e)
         }
     }
 }

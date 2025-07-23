@@ -34,4 +34,14 @@ class OrderRepositoryImpl @Inject constructor(
         )
         firestore.collection("orders").document(orderSnapshot.orderId).set(orderSnapshot).await()
     }
+
+    override suspend fun getOrderFromUser(userId: String, orderStatus: String): List<OrderModel> {
+        val result = firestore.collection("orders")
+            .whereEqualTo("userId", userId)
+            .whereEqualTo("status", orderStatus)
+            .get().await()
+        return result.documents.mapNotNull { doc ->
+            doc.toObject(OrderModel::class.java)
+        }
+    }
 }
