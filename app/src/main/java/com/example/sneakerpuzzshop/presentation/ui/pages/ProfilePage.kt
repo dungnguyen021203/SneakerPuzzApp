@@ -53,6 +53,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.OrderItem
 import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
@@ -167,19 +168,25 @@ fun ProfilePage(
                                 icon = Icons.Default.AccountBalanceWallet,
                                 label = "Pending",
                                 color = Color.Blue,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[0].uppercase()
                             )
                             OrderItem(
                                 icon = Icons.Default.LocalShipping,
                                 label = "Delivered",
                                 color = Color(0xFFFFC107),
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[1].uppercase()
                             )
                             OrderItem(
                                 icon = Icons.Default.ShoppingCart,
                                 label = "Processing",
                                 color = Color(0xFFFF66C4),
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[2].uppercase()
                             )
                         }
                     }
@@ -193,19 +200,25 @@ fun ProfilePage(
                                 icon = Icons.Default.Receipt,
                                 label = "Cancelled",
                                 color = Color.Green,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[3].uppercase()
                             )
                             OrderItem(
                                 icon = Icons.Default.Favorite,
                                 label = "Wishlist",
                                 color = Color.Red,
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[0].uppercase() //TODO(): To another page
                             )
                             OrderItem(
                                 icon = Icons.AutoMirrored.Filled.HelpCenter,
                                 label = "Support",
                                 color = Color(0XFFCB6CE6),
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                navController = navController,
+                                navDestination = ORDER_STATUS_LIST[0].uppercase() //TODO(): To support page
                             )
                         }
                     }
