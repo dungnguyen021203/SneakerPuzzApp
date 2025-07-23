@@ -23,13 +23,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
 import com.example.sneakerpuzzshop.utils.others.formatDateOnly
-import com.example.sneakerpuzzshop.utils.others.formatTimestamp
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER_DETAILS
 
 @Composable
-fun OrderCard(modifier: Modifier = Modifier, order: OrderModel) {
+fun OrderCard(modifier: Modifier = Modifier, order: OrderModel, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth(),
@@ -122,7 +124,9 @@ fun OrderCard(modifier: Modifier = Modifier, order: OrderModel) {
             ) {
                 Button(
                     onClick = {
-                        // TODO(): To order details
+                        navController.navigate(ROUTE_ORDER_DETAILS + order.orderId) {
+                            popUpTo(ROUTE_ORDER + order.status) {inclusive = false}
+                        }
                     },
                     modifier = Modifier
                         .height(36.dp),
