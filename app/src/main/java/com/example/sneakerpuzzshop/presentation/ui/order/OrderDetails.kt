@@ -1,6 +1,5 @@
 package com.example.sneakerpuzzshop.presentation.ui.order
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,12 +40,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.showToast
-import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.OrderViewModel
 import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
-import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER_DETAILS
 
@@ -57,20 +54,16 @@ fun OrderDetails(
     orderId: String,
     navController: NavHostController,
     cartViewModel: CartViewModel = hiltViewModel(),
-    orderViewModel: OrderViewModel = hiltViewModel(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    orderViewModel: OrderViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     var showDeleteDialog by remember { mutableStateOf(false) }
-
-    val userId = authViewModel.currentUser?.uid!!.toString()
 
     val productMap by cartViewModel.productDetailsMap.collectAsState()
     val orderState by orderViewModel.orderDetails.collectAsState()
     val cancelOrderState by orderViewModel.cancelOrder.collectAsState()
 
     LaunchedEffect(orderId) {
-        cartViewModel.getCartFromUser(userId)
         orderViewModel.getOrderDetails(orderId)
     }
 
@@ -113,6 +106,9 @@ fun OrderDetails(
             is Resource.Success<*> -> {
                 val order = (orderState as Resource.Success).data
                 var isEnabled by remember { mutableStateOf(order.status) }
+                LaunchedEffect(orderState) {
+                    cartViewModel.getProductFromOrder(order.items)
+                }
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -141,12 +137,28 @@ fun OrderDetails(
                         // Card
                         items(order.items) { orderItem ->
                             val product = productMap[orderItem.productId]
-                            OrderProductCard(
-                                product = product,
-                                orderItem = orderItem,
-                                navController = navController,
-                                orderId = orderId
-                            )
+                            if (product != null) {
+                                OrderProductCard(
+                                    product = product,
+                                    orderItem = orderItem,
+                                    navController = navController,
+                                    orderId = orderId
+                                )
+                            } else {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        text = "Thông tin sản phẩm không còn khả dụng",
+                                        color = Color.Red,
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 16.sp
+                                    )
+                                }
+
+                            }
                         }
 
                         // Order Info

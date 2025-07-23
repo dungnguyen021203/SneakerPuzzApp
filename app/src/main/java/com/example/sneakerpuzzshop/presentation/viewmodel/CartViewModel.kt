@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
+import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.domain.usecase.AddToCartUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ClearCartUseCase
@@ -129,5 +130,19 @@ class CartViewModel @Inject constructor(
             }
         }
     }
+
+    fun getProductFromOrder(orderItems: List<CartItemModel>) {
+        viewModelScope.launch {
+            val productMap = mutableMapOf<String, ProductModel>()
+            for (item in orderItems) {
+                val result = productDetailsUseCase(item.productId)
+                if (result is Resource.Success) {
+                    productMap[item.productId] = result.data
+                }
+            }
+            _productDetailsMap.value = productMap
+        }
+    }
+
 
 }
