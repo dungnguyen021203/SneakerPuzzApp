@@ -9,3 +9,9 @@ fun formatTimestamp(timestamp: Timestamp): String {
     val formatter = SimpleDateFormat("dd/MM/yyyy h:mma", Locale.getDefault())
     return formatter.format(date)
 }
+
+fun formatDateOnly(timestamp: Timestamp): String {
+    val date = timestamp.toDate()
+    val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return formatter.format(date)
+}
