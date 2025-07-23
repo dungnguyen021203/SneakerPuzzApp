@@ -102,7 +102,6 @@ fun CheckoutPage(
 
             is Resource.Success<*> -> {
                 val cartList = (cartState as Resource.Success).data
-                Log.d("OrderDebug", "Name: ${user?.name}, Phone: ${user?.phoneNumber}, Address: ${user?.address}")
 
                 val showEmptyCartDialog = remember(
                     cartList,
