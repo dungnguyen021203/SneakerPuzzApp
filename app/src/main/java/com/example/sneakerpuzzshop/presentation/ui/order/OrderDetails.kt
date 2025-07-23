@@ -41,7 +41,11 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.OrderViewModel
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER_DETAILS
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,10 +64,30 @@ fun OrderDetails(
 
     val productMap by cartViewModel.productDetailsMap.collectAsState()
     val orderState by orderViewModel.orderDetails.collectAsState()
+    val cancelOrderState by orderViewModel.cancelOrder.collectAsState()
 
     LaunchedEffect(orderId) {
         cartViewModel.getCartFromUser(userId)
         orderViewModel.getOrderDetails(orderId)
+    }
+
+    LaunchedEffect(cancelOrderState) {
+        when (cancelOrderState) {
+            is Resource.Success -> {
+                showToast(context, "Cancel order thành công!")
+                navController.navigate(ROUTE_ORDER + ORDER_STATUS_LIST[3]) {
+                    popUpTo(ROUTE_ORDER_DETAILS + orderId) {
+                        inclusive = true
+                    }
+                    launchSingleTop = true
+
+                }
+            }
+            is Resource.Failure -> {
+                showToast(context, "Lỗi khi cancel order")
+            }
+            else -> {}
+        }
     }
 
     orderState.let {
@@ -154,7 +178,7 @@ fun OrderDetails(
                                     text = { Text("Bạn có chắc chắn muốn bỏ đơn hàng này? Hành động này không thể hoàn tác.") },
                                     confirmButton = {
                                         Button(onClick = {
-                                            // TODO(): Cancel order
+                                            orderViewModel.cancelOrder(orderId)
                                             showDeleteDialog = false
                                         }) {
                                             Text("Xoá")

@@ -124,9 +124,7 @@ fun OrderCard(modifier: Modifier = Modifier, order: OrderModel, navController: N
             ) {
                 Button(
                     onClick = {
-                        navController.navigate(ROUTE_ORDER_DETAILS + order.orderId) {
-                            popUpTo(ROUTE_ORDER + order.status) {inclusive = false}
-                        }
+                        navController.navigate(ROUTE_ORDER_DETAILS + order.orderId)
                     },
                     modifier = Modifier
                         .height(36.dp),
