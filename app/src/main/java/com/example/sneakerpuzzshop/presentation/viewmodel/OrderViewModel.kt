@@ -6,6 +6,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.domain.usecase.AddToOrderUseCase
+import com.example.sneakerpuzzshop.domain.usecase.GetOrderDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetOrderFromUserUseCase
 import com.example.sneakerpuzzshop.utils.others.BillingResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,10 +18,14 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderViewModel @Inject constructor(
     private val addToOrderUseCase: AddToOrderUseCase,
-    private val getOrderFromUserUseCase: GetOrderFromUserUseCase
+    private val getOrderFromUserUseCase: GetOrderFromUserUseCase,
+    private val getOrderDetailsUseCase: GetOrderDetailsUseCase
 ): ViewModel() {
     private val _order = MutableStateFlow<Resource<List<OrderModel>>>(Resource.Loading)
     val order: StateFlow<Resource<List<OrderModel>>> = _order
+
+    private val _orderDetails = MutableStateFlow<Resource<OrderModel>>(Resource.Loading)
+    val orderDetails: StateFlow<Resource<OrderModel>> = _orderDetails
 
     fun addToOrder(
         userId: String,
@@ -46,6 +51,16 @@ class OrderViewModel @Inject constructor(
             _order.value = Resource.Success(result)
         } catch (e: Exception) {
             _order.value = Resource.Failure(e)
+        }
+    }
+
+    fun getOrderDetails(orderId: String) = viewModelScope.launch {
+        try {
+            _orderDetails.value = Resource.Loading
+            val result = getOrderDetailsUseCase(orderId)
+            _orderDetails.value = result
+        } catch (e: Exception) {
+            _orderDetails.value = Resource.Failure(e)
         }
     }
 }

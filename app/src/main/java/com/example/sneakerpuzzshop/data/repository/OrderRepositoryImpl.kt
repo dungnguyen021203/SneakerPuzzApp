@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.data.repository
 
+import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.domain.repository.OrderRepository
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
-): OrderRepository {
+) : OrderRepository {
     override suspend fun addToOrder(
         userId: String,
         userName: String?,
@@ -42,6 +43,27 @@ class OrderRepositoryImpl @Inject constructor(
             .get().await()
         return result.documents.mapNotNull { doc ->
             doc.toObject(OrderModel::class.java)
+        }
+    }
+
+    override suspend fun getOrderDetails(
+        orderId: String
+    ): Resource<OrderModel> {
+        return try {
+            val snapshot = firestore.collection("orders")
+                .document(orderId)
+                .get().await()
+            val result = snapshot.toObject(OrderModel::class.java)
+
+            if (result == null) {
+                Resource.Failure(Exception("Không tìm thấy order"))
+            } else {
+
+                Resource.Success(result)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Failure(e)
         }
     }
 }

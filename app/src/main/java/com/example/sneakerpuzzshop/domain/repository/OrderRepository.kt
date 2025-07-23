@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.domain.repository
 
+import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.utils.others.BillingResult
@@ -15,4 +16,6 @@ interface OrderRepository {
     )
 
     suspend fun getOrderFromUser(userId: String, orderStatus: String): List<OrderModel>
+
+    suspend fun getOrderDetails(orderId: String): Resource<OrderModel>
 }
