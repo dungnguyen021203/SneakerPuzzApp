@@ -78,12 +78,16 @@ class OrderRepositoryImpl @Inject constructor(
                 when(currentStatus) {
                     ORDER_STATUS_LIST[0], ORDER_STATUS_LIST[2] -> {
                         db.update("status", ORDER_STATUS_LIST[3])
+                            .await()
+                        Resource.Success(Unit)
+                    }
+                    ORDER_STATUS_LIST[1] -> {
+                        Resource.Failure(Exception("Order đã được shipped, không thể cancel"))
                     }
                     else -> {
                         Resource.Failure(Exception("Không thể cancel order"))
                     }
                 }
-                Resource.Success(Unit)
             } else {
                 Resource.Failure(Exception("Order not found"))
             }

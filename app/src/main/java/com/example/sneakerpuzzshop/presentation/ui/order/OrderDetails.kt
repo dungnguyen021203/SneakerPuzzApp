@@ -72,26 +72,31 @@ fun OrderDetails(
     }
 
     LaunchedEffect(cancelOrderState) {
-        when (cancelOrderState) {
-            is Resource.Success -> {
-                showToast(context, "Cancel order thành công!")
-                navController.navigate(ROUTE_ORDER + ORDER_STATUS_LIST[3]) {
-                    popUpTo(ROUTE_ORDER_DETAILS + orderId) {
-                        inclusive = true
-                    }
-                    launchSingleTop = true
+        cancelOrderState.let {
+            when (it) {
+                is Resource.Success -> {
+                    showToast(context, "Cancel order thành công!")
+                    navController.navigate(ROUTE_ORDER + ORDER_STATUS_LIST[3]) {
+                        popUpTo(ROUTE_ORDER_DETAILS + orderId) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
 
+                    }
                 }
+
+                is Resource.Failure -> {
+                    showToast(context = context, message = it.exception.message.toString())
+                }
+
+                else -> {}
+
             }
-            is Resource.Failure -> {
-                showToast(context, "Lỗi khi cancel order")
-            }
-            else -> {}
         }
     }
 
     orderState.let {
-        when(it) {
+        when (it) {
             is Resource.Failure -> {
                 LaunchedEffect(orderState) {
                     showToast(context = context, message = it.exception.message.toString())
