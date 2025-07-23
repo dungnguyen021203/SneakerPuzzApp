@@ -12,6 +12,7 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.category.CategoryProductsPage
+import com.example.sneakerpuzzshop.presentation.ui.order.OrderManagePage
 import com.example.sneakerpuzzshop.presentation.ui.pages.CheckoutPage
 import com.example.sneakerpuzzshop.presentation.ui.product.ProductDetails
 import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfile
@@ -32,6 +33,7 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_PHONE
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCT_REVIEW
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SIGNUP
@@ -97,6 +99,10 @@ fun AppNavHost(
         }
         composable(ROUTE_EDIT_PROFILE_FIELD_PASSWORD) {
             EditProfileFieldPassword(navController = navController)
+        }
+        composable("$ROUTE_ORDER{orderStatus}") {
+            var orderStatus = it.arguments?.getString("orderStatus")
+            OrderManagePage(modifier, orderStatus?:"", navController)
         }
     }
 }
