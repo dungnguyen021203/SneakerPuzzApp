@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.ui.order
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -111,7 +112,7 @@ fun OrderDetails(
 
             is Resource.Success<*> -> {
                 val order = (orderState as Resource.Success).data
-
+                var isEnabled by remember { mutableStateOf(order.status) }
                 Scaffold(
                     topBar = {
                         TopAppBar(
@@ -169,16 +170,18 @@ fun OrderDetails(
                                     .fillMaxWidth(),
                                 contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = "Cancel Order",
-                                    fontSize = 18.sp,
-                                    modifier = Modifier
-                                        .clickable {
-                                            showDeleteDialog = true
-                                        },
-                                    color = Color.Red,
-                                    textAlign = TextAlign.Center
-                                )
+                                if (isEnabled == ORDER_STATUS_LIST[0] || isEnabled == ORDER_STATUS_LIST[2]) {
+                                    Text(
+                                        text = "Cancel Order",
+                                        fontSize = 18.sp,
+                                        modifier = Modifier
+                                            .clickable {
+                                                showDeleteDialog = true
+                                            },
+                                        color = Color.Red,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
 

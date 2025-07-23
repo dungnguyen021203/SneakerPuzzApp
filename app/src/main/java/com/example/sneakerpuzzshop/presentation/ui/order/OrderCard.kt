@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.domain.model.OrderModel
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
 import com.example.sneakerpuzzshop.utils.others.formatDateOnly
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
@@ -141,7 +142,12 @@ fun OrderCard(modifier: Modifier = Modifier, order: OrderModel, navController: N
                     order.status,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color.Green
+                    color = when (order.status) {
+                        ORDER_STATUS_LIST[0] -> Color.Yellow
+                        ORDER_STATUS_LIST[1] -> Color.Green
+                        ORDER_STATUS_LIST[2] -> Color.Cyan
+                        else -> Color.Red
+                    }
                 )
             }
         }

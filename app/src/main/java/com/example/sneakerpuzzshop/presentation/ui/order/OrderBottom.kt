@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.utils.others.BillingResult
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
 import com.example.sneakerpuzzshop.utils.others.formatTimestamp
 import com.google.firebase.Timestamp
@@ -66,7 +67,11 @@ fun OrderBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = "Created at: ", fontSize = 14.sp)
-                Text(text = formatTimestamp(orderDate), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = formatTimestamp(orderDate),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             Row(
                 modifier = Modifier
@@ -183,7 +188,17 @@ fun OrderBottom(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = formatTimestamp(orderDate), fontSize = 14.sp)
-                Text(text = orderStatus, fontSize = 14.sp, fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = orderStatus,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = when (orderStatus) {
+                        ORDER_STATUS_LIST[0] -> Color.Yellow
+                        ORDER_STATUS_LIST[1] -> Color.Green
+                        ORDER_STATUS_LIST[2] -> Color.Cyan
+                        else -> Color.Red
+                    }
+                )
             }
         }
     }
