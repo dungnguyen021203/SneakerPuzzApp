@@ -153,7 +153,7 @@ fun OrderManagePage(
                             modifier = Modifier.fillMaxSize()
                         ) {
                             items(orderList) { order ->
-                                OrderCard(order = order)
+                                OrderCard(order = order, navController = navController)
                             }
                         }
 
