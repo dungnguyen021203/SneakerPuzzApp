@@ -18,4 +18,6 @@ interface OrderRepository {
     suspend fun getOrderFromUser(userId: String, orderStatus: String): List<OrderModel>
 
     suspend fun getOrderDetails(orderId: String): Resource<OrderModel>
+
+    suspend fun cancelOrder(orderId: String): Resource<Unit>
 }

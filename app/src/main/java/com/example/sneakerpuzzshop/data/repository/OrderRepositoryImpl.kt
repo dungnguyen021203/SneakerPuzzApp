@@ -5,6 +5,7 @@ import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.OrderModel
 import com.example.sneakerpuzzshop.domain.repository.OrderRepository
 import com.example.sneakerpuzzshop.utils.others.BillingResult
+import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
@@ -63,6 +64,30 @@ class OrderRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             e.printStackTrace()
+            Resource.Failure(e)
+        }
+    }
+
+    override suspend fun cancelOrder(orderId: String): Resource<Unit> {
+        return try {
+            val db = firestore.collection("orders").document(orderId)
+            val orderRef = firestore.collection("orders").document(orderId).get().await()
+
+            if (orderRef.exists()) {
+                val currentStatus = orderRef.getString("status")
+                when(currentStatus) {
+                    ORDER_STATUS_LIST[0], ORDER_STATUS_LIST[2] -> {
+                        db.update("status", ORDER_STATUS_LIST[3])
+                    }
+                    else -> {
+                        Resource.Failure(Exception("Không thể cancel order"))
+                    }
+                }
+                Resource.Success(Unit)
+            } else {
+                Resource.Failure(Exception("Order not found"))
+            }
+        } catch (e: Exception) {
             Resource.Failure(e)
         }
     }
