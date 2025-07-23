@@ -1,6 +1,7 @@
 package com.example.sneakerpuzzshop.presentation.ui.order
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -162,17 +164,22 @@ fun OrderDetails(
                         // Cancel Order
                         item {
                             Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "Cancel Order",
-                                fontSize = 18.sp,
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        showDeleteDialog = true
-                                    },
-                                color = Color.Red,
-                                textAlign = TextAlign.Center
-                            )
+                                    .fillMaxWidth(),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "Cancel Order",
+                                    fontSize = 18.sp,
+                                    modifier = Modifier
+                                        .clickable {
+                                            showDeleteDialog = true
+                                        },
+                                    color = Color.Red,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
 
                         item {
