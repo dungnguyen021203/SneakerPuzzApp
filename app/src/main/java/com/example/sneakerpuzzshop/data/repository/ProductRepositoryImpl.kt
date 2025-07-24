@@ -5,6 +5,9 @@ import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.domain.repository.ProductRepository
 import com.example.sneakerpuzzshop.utils.others.await
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 
 class ProductRepositoryImpl @Inject constructor(
@@ -37,5 +40,26 @@ class ProductRepositoryImpl @Inject constructor(
             e.printStackTrace()
             Resource.Failure(e)
         }
+    }
+
+    override fun getEveryProduct(): Flow<List<ProductModel>> = callbackFlow {
+        val listenerRegistration = firestore
+            .collection("data")
+            .document("stocks")
+            .collection("product")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    close(error) // đóng Flow nếu có lỗi
+                    return@addSnapshotListener
+                }
+
+                val products = snapshot?.documents?.mapNotNull { doc ->
+                    doc.toObject(ProductModel::class.java)
+                } ?: emptyList()
+
+                trySend(products) // emit dữ liệu mới
+            }
+
+        awaitClose { listenerRegistration.remove() }
     }
 }
