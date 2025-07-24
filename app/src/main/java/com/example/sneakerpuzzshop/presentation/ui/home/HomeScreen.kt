@@ -66,7 +66,7 @@ fun HomeScreen(navController: NavHostController) {
 fun ContentScreen(modifier: Modifier, index: Int, navController: NavHostController) {
     when(index) {
         0 -> HomePage(modifier, navController = navController)
-        1 -> FavoritePage(modifier)
+        1 -> FavoritePage(modifier, navController = navController)
         2 -> CartPage(modifier, navController = navController)
         3 -> ProfilePage(modifier, navController = navController)
     }

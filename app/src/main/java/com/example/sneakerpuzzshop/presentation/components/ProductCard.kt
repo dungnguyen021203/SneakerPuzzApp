@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -18,19 +20,26 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.ProductModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.FavoriteViewModel
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
+import androidx.compose.runtime.getValue
 
 @Composable
 fun ProductCard(
     modifier: Modifier = Modifier,
     product: ProductModel,
     navController: NavHostController,
-    categoryImage: String?
+    categoryImage: String?,
+    favoriteViewModel: FavoriteViewModel = hiltViewModel()
 ) {
+    val favorites by favoriteViewModel.favorites.collectAsState()
+    val isFavorite = product.id in favorites
+
     Card(
         modifier = modifier
             .padding(8.dp)
@@ -73,15 +82,21 @@ fun ProductCard(
                 }
 
                 // Heart icon
-                Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
+                IconButton(
+                    onClick = {
+                        favoriteViewModel.toggleFavorite(product.id)
+                    },
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(6.dp)
                         .size(20.dp),
-                    tint = Color.Gray
-                )
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color.Gray
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(8.dp))
