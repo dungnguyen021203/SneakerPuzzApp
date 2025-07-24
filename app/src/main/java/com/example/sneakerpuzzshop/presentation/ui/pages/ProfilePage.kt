@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Card
@@ -61,8 +62,10 @@ import com.example.sneakerpuzzshop.presentation.viewmodel.ThemeViewModel
 import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_FAQS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -179,7 +182,7 @@ fun ProfilePage(
                                 color = Color.Blue,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0]
+                                navDestination = ROUTE_ORDER + ORDER_STATUS_LIST[0]
                             )
                             OrderItem(
                                 icon = Icons.Default.LocalShipping,
@@ -187,7 +190,7 @@ fun ProfilePage(
                                 color = Color(0xFFFFC107),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[1]
+                                navDestination = ROUTE_ORDER + ORDER_STATUS_LIST[1]
                             )
                             OrderItem(
                                 icon = Icons.Default.ShoppingCart,
@@ -195,7 +198,7 @@ fun ProfilePage(
                                 color = Color(0xFFFF66C4),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[2]
+                                navDestination = ROUTE_ORDER + ORDER_STATUS_LIST[2]
                             )
                         }
                     }
@@ -211,15 +214,15 @@ fun ProfilePage(
                                 color = Color.Green,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[3]
+                                navDestination = ROUTE_ORDER + ORDER_STATUS_LIST[3]
                             )
                             OrderItem(
-                                icon = Icons.Default.Favorite,
-                                label = "Wishlist",
+                                icon = Icons.Default.Quiz,
+                                label = "FAQ",
                                 color = Color.Red,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0] //TODO(): To another page
+                                navDestination = ROUTE_FAQS
                             )
                             OrderItem(
                                 icon = Icons.AutoMirrored.Filled.HelpCenter,

@@ -12,6 +12,7 @@ import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
 import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.category.CategoryProductsPage
+import com.example.sneakerpuzzshop.presentation.ui.craft.FAQPage
 import com.example.sneakerpuzzshop.presentation.ui.order.OrderDetails
 import com.example.sneakerpuzzshop.presentation.ui.order.OrderManagePage
 import com.example.sneakerpuzzshop.presentation.ui.pages.CheckoutPage
@@ -31,6 +32,7 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_ADDRESS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_NAME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_PASSWORD
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE_FIELD_PHONE
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_FAQS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_FORGET_PW
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
@@ -109,6 +111,9 @@ fun AppNavHost(
         composable("$ROUTE_ORDER_DETAILS{orderId}") {
             var orderId = it.arguments?.getString("orderId")
             OrderDetails(modifier, orderId?:"", navController)
+        }
+        composable(ROUTE_FAQS) {
+            FAQPage(navController = navController)
         }
     }
 }

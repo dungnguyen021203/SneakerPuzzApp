@@ -42,7 +42,7 @@ fun OrderItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .clickable {
-                navController.navigate(ROUTE_ORDER + navDestination)
+                navController.navigate(navDestination)
             },
     ) {
         Box(
