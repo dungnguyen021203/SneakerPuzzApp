@@ -5,13 +5,13 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -59,7 +59,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.sneakerpuzzshop.R
 import com.example.sneakerpuzzshop.common.Resource
@@ -68,7 +67,6 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.utils.others.bitmapToFile
 import com.example.sneakerpuzzshop.utils.others.uriToFile
-import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 import kotlinx.coroutines.launch
 
@@ -121,13 +119,14 @@ fun EditProfile(
                     popUpTo(0) { inclusive = true }
                 }
             }
+
             is Resource.Failure -> {
                 showToast(context, "Lỗi khi xoá tài khoản.")
             }
+
             else -> {}
         }
     }
-
 
 
     // Take picture from camera and Gallery
@@ -191,7 +190,7 @@ fun EditProfile(
                 elevation = CardDefaults.cardElevation(6.dp),
                 colors = CardDefaults.cardColors(Color.White)
             ) {
-                if(user?.avatar?.isBlank() == true) {
+                if (user?.avatar?.isBlank() == true) {
                     Image(
                         painterResource(R.drawable.pro5),
                         contentDescription = "Profile image",
@@ -279,17 +278,16 @@ fun EditProfile(
 
             Spacer(modifier = Modifier.height(5.dp))
 
-            Text(
-                text = "Delete Account",
-                fontSize = 16.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Text(
+                    text = "Delete Account",
+                    fontSize = 16.sp,
+                    modifier = Modifier.clickable {
                         showDeleteDialog = true
                     },
-                color = Color.Red,
-                textAlign = TextAlign.Center
-            )
+                    color = Color.Red
+                )
+            }
 
             if (showSheet) {
                 ModalBottomSheet(
@@ -300,7 +298,8 @@ fun EditProfile(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
                             text = "Choose Image Source",

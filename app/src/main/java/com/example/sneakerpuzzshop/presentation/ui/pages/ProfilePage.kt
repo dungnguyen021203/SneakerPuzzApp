@@ -3,6 +3,7 @@ package com.example.sneakerpuzzshop.presentation.ui.pages
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -259,25 +260,26 @@ fun ProfilePage(
 
                     // Logout
                     item {
-                        TextButton(
-                            onClick = {
-                                viewModel.signOut()
-                                navController.navigate(ROUTE_LOGIN) {
-                                    popUpTo(ROUTE_HOME) { inclusive = true }
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            TextButton(
+                                onClick = {
+                                    viewModel.signOut()
+                                    navController.navigate(ROUTE_LOGIN) {
+                                        popUpTo(ROUTE_HOME) { inclusive = true }
+                                    }
                                 }
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Icon(
-                                    Icons.AutoMirrored.Filled.Logout,
-                                    contentDescription = null,
-                                    tint = Color(0xFF6E6E6E)
-                                )
-                                Text(text = "Sign Out", fontSize = 16.sp, color = Color(0xFF6E6E6E))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.Logout,
+                                        contentDescription = null,
+                                        tint = Color(0xFF6E6E6E)
+                                    )
+                                    Text(text = "Sign Out", fontSize = 16.sp, color = Color(0xFF6E6E6E))
+                                }
                             }
                         }
                     }

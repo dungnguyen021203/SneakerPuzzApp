@@ -15,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,10 +42,10 @@ fun CategoryItem(category: CategoryModel, navController: NavHostController) {
     Card(
         modifier = Modifier
             .size(50.dp)
+            .clip(RoundedCornerShape(30.dp))
             .clickable {
                 navController.navigate(ROUTE_CATEGORY_PRODUCTS + category.id)
             },
-        shape = RoundedCornerShape(30.dp),
         elevation = CardDefaults.cardElevation(1.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFF0F0F0))
     ) {
