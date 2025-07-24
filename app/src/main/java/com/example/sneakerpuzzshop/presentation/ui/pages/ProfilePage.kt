@@ -24,6 +24,7 @@ import androidx.compose.material.icons.automirrored.filled.HelpCenter
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.Person
@@ -33,6 +34,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -55,6 +57,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.presentation.components.OrderItem
 import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
+import com.example.sneakerpuzzshop.presentation.viewmodel.ThemeViewModel
 import com.example.sneakerpuzzshop.utils.others.ORDER_STATUS_LIST
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_EDIT_PROFILE
@@ -66,10 +69,12 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 fun ProfilePage(
     modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel(),
+    themeViewModel: ThemeViewModel = hiltViewModel(),
     navController: NavHostController
 ) {
 
     val authState by viewModel.userInformation.collectAsState()
+    val isDark by themeViewModel.dark.collectAsState()
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
@@ -97,7 +102,7 @@ fun ProfilePage(
                         .padding(horizontal = 16.dp)
                         .padding(top = 25.dp),
                     contentPadding = PaddingValues(
-                        bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 30.dp
+                        bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 50.dp
                     ),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(15.dp)
@@ -258,6 +263,35 @@ fun ProfilePage(
                         }
                     }
 
+                    //Dark Mode
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    Icons.Default.DarkMode,
+                                    contentDescription = null,
+                                    tint = Color(0xFF6E6E6E)
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Text(
+                                    text = "Dark Mode",
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                            }
+                            Switch(
+                                checked = isDark,
+                                onCheckedChange = { themeViewModel.toggleDarkMode() }
+                            )
+                        }
+                    }
+
                     // Logout
                     item {
                         Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -276,9 +310,9 @@ fun ProfilePage(
                                     Icon(
                                         Icons.AutoMirrored.Filled.Logout,
                                         contentDescription = null,
-                                        tint = Color(0xFF6E6E6E)
+                                        tint = Color.Red
                                     )
-                                    Text(text = "Sign Out", fontSize = 16.sp, color = Color(0xFF6E6E6E))
+                                    Text(text = "Sign Out", fontSize = 16.sp, color = Color.Red)
                                 }
                             }
                         }
