@@ -66,6 +66,7 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_FAQS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_HOME
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_LOGIN
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_SURPRISE
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -219,18 +220,18 @@ fun ProfilePage(
                             OrderItem(
                                 icon = Icons.Default.Quiz,
                                 label = "FAQ",
-                                color = Color.Red,
+                                color =Color(0XFFCB6CE6),
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
                                 navDestination = ROUTE_FAQS
                             )
                             OrderItem(
-                                icon = Icons.AutoMirrored.Filled.HelpCenter,
-                                label = "Support",
-                                color = Color(0XFFCB6CE6),
+                                icon = Icons.Default.Favorite,
+                                label = "Surprise",
+                                color = Color.Red,
                                 modifier = Modifier.weight(1f),
                                 navController = navController,
-                                navDestination = ORDER_STATUS_LIST[0] //TODO(): To support page
+                                navDestination = ROUTE_SURPRISE
                             )
                         }
                     }

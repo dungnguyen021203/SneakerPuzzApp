@@ -92,11 +92,10 @@ fun FAQPage(modifier: Modifier = Modifier, navController: NavHostController) {
             )
             Card(
                 modifier = modifier
-                    .clip(RoundedCornerShape(12.dp))
                     .clickable {
                         // TODO()
                     },
-
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
@@ -126,10 +125,10 @@ fun FAQPage(modifier: Modifier = Modifier, navController: NavHostController) {
 
             Card(
                 modifier = modifier
-                    .clip(RoundedCornerShape(12.dp))
                     .clickable {
                         // TODO()
                     },
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
@@ -159,7 +158,6 @@ fun FAQPage(modifier: Modifier = Modifier, navController: NavHostController) {
 
             Card(
                 modifier = modifier
-                    .clip(RoundedCornerShape(12.dp))
                     .clickable {
                         openEmailApp(
                             context = context,
@@ -168,6 +166,7 @@ fun FAQPage(modifier: Modifier = Modifier, navController: NavHostController) {
                             body = "Hi team,\n\nI need help with..."
                         )
                     },
+                shape = RoundedCornerShape(12.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
                 elevation = CardDefaults.cardElevation(8.dp)
             ) {
