@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.sneakerpuzzshop.common.Resource
@@ -8,10 +9,16 @@ import com.example.sneakerpuzzshop.domain.usecase.GetEveryProductUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ProductDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.ProductUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +36,31 @@ class ProductViewModel @Inject constructor(
 
     private val _everyProduct = MutableStateFlow<Resource<List<ProductModel>>>(Resource.Loading)
     val everyProduct: StateFlow<Resource<List<ProductModel>>> = _everyProduct
+
+    private val _query = MutableStateFlow<String>("")
+    val query: StateFlow<String> = _query
+
+    private val _searchResults = MutableStateFlow<List<ProductModel>>(emptyList())
+    val searchResult: StateFlow<List<ProductModel>> = _searchResults
+
+    init {
+        getEveryProduct()
+    }
+
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val suggestions: StateFlow<List<String>> =
+        query.debounce(300).mapLatest { q ->
+            if (q.isBlank()) {
+                emptyList()
+            } else {
+                val productList = (_everyProduct.value as? Resource.Success)?.data ?: emptyList()
+                productList.filter {
+                    it.name.contains(q, true) || it.category.contains(q, true)
+                }.map { it.name }
+                    .distinct().take(5)
+            }
+        }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
     fun loadProductsByCategory(categoryId: String) {
         viewModelScope.launch {
@@ -59,5 +91,27 @@ class ProductViewModel @Inject constructor(
                     _everyProduct.value = Resource.Success(list)
                 }
         }
+    }
+
+    fun onQueryChange(q: String) {
+        _query.value = q
+    }
+
+    fun performSearch(query: String) {
+        viewModelScope.launch {
+            when(val result = _everyProduct.value) {
+                is Resource.Failure -> {
+                    _everyProduct.value = Resource.Failure(Exception("Cant search"))
+                }
+                Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    val productList = result.data
+                    _searchResults.value =  productList.filter {
+                        it.name.contains(query, true) || it.category.contains(query, true)
+                    }
+                }
+            }
+         }
     }
 }

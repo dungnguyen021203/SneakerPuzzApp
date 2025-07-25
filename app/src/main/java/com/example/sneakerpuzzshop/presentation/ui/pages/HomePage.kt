@@ -38,6 +38,7 @@ import com.example.sneakerpuzzshop.common.Resource
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.presentation.components.ProductCard
 import com.example.sneakerpuzzshop.presentation.components.showToast
+import com.example.sneakerpuzzshop.presentation.ui.search.SearchBarWithSuggestions
 import com.example.sneakerpuzzshop.presentation.viewmodel.HomeViewModel
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CATEGORY_PRODUCTS
@@ -86,10 +87,9 @@ fun HomePage(
                 ) {
                     item {
                         HeaderView(modifier)
+                        Spacer(modifier = Modifier.height(10.dp))
 
-                        // Spacer(modifier = Modifier.height(10.dp))
-                        // SearchBarItem()
-
+                        SearchBarWithSuggestions(navController = navController, autoFocus = false )
                         Spacer(modifier = Modifier.height(20.dp))
                         CategoryView(modifier, navController = navController)
                         BannerView(modifier = Modifier.height(200.dp))

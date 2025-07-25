@@ -10,10 +10,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sneakerpuzzshop.presentation.ui.auth.ForgetPasswordScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.LoginScreen
 import com.example.sneakerpuzzshop.presentation.ui.auth.SignupScreen
-import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.category.CategoryProductsPage
 import com.example.sneakerpuzzshop.presentation.ui.craft.FAQPage
 import com.example.sneakerpuzzshop.presentation.ui.craft.Surprise
+import com.example.sneakerpuzzshop.presentation.ui.home.HomeScreen
 import com.example.sneakerpuzzshop.presentation.ui.order.OrderDetails
 import com.example.sneakerpuzzshop.presentation.ui.order.OrderManagePage
 import com.example.sneakerpuzzshop.presentation.ui.pages.CheckoutPage
@@ -24,6 +24,7 @@ import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldName
 import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldPassword
 import com.example.sneakerpuzzshop.presentation.ui.profile.EditProfileFieldPhone
 import com.example.sneakerpuzzshop.presentation.ui.review.ProductReview
+import com.example.sneakerpuzzshop.presentation.ui.search.SearchResults
 import com.example.sneakerpuzzshop.presentation.ui.splash.SplashScreen
 import com.example.sneakerpuzzshop.presentation.ui.thankyou.ThankyouPage
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CATEGORY_PRODUCTS
@@ -41,6 +42,7 @@ import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_ORDER_DETAILS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCT_REVIEW
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_SEARCH_RESULT
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SIGNUP
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SPLASH
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_SURPRISE
@@ -119,6 +121,10 @@ fun AppNavHost(
         }
         composable(ROUTE_SURPRISE) {
             Surprise(navController = navController)
+        }
+        composable("$ROUTE_SEARCH_RESULT{query}") {
+            var query = it.arguments?.getString("query") ?: ""
+            SearchResults(navController = navController, initialQuery = query)
         }
     }
 }
