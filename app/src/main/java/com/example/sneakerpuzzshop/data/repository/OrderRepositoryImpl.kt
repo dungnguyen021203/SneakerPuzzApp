@@ -11,6 +11,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 class OrderRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
@@ -93,6 +94,31 @@ class OrderRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Resource.Failure(e)
+        }
+    }
+
+    override suspend fun updateProductStock(cartItems: List<CartItemModel>){
+        return try {
+            // race condition
+            cartItems.forEach { cart ->
+                val ref = firestore.collection("data").document("stocks")
+                    .collection("product").document(cart.productId)
+                firestore.runTransaction { transaction ->
+                    val snapshot = transaction.get(ref)
+                    val sizesMap = snapshot.get("sizes") as? Map<String, Long> ?: emptyMap()
+                    val currentStock = sizesMap[cart.size] ?: 0L
+                    val newStock = (currentStock - cart.quantity).coerceAtLeast(0)
+
+                    val updatedMap = sizesMap.toMutableMap()
+                    updatedMap[cart.size] = newStock
+
+                    transaction.update(ref, "sizes", updatedMap)
+                }.await()
+            }
+        } catch (e: CancellationException) {
+                throw e
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

@@ -20,4 +20,6 @@ interface OrderRepository {
     suspend fun getOrderDetails(orderId: String): Resource<OrderModel>
 
     suspend fun cancelOrder(orderId: String): Resource<Unit>
+
+    suspend fun updateProductStock(cartItems: List<CartItemModel>)
 }

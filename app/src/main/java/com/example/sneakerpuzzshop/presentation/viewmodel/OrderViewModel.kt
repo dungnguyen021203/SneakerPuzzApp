@@ -9,6 +9,7 @@ import com.example.sneakerpuzzshop.domain.usecase.AddToOrderUseCase
 import com.example.sneakerpuzzshop.domain.usecase.CancelOrderUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetOrderDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.GetOrderFromUserUseCase
+import com.example.sneakerpuzzshop.domain.usecase.UpdateProductStockUseCase
 import com.example.sneakerpuzzshop.utils.others.BillingResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,9 @@ class OrderViewModel @Inject constructor(
     private val addToOrderUseCase: AddToOrderUseCase,
     private val getOrderFromUserUseCase: GetOrderFromUserUseCase,
     private val getOrderDetailsUseCase: GetOrderDetailsUseCase,
-    private val cancelOrderUseCase: CancelOrderUseCase
-): ViewModel() {
+    private val cancelOrderUseCase: CancelOrderUseCase,
+    private val updateProductStockUseCase: UpdateProductStockUseCase
+) : ViewModel() {
     private val _order = MutableStateFlow<Resource<List<OrderModel>>>(Resource.Loading)
     val order: StateFlow<Resource<List<OrderModel>>> = _order
 
@@ -77,5 +79,9 @@ class OrderViewModel @Inject constructor(
         } catch (e: Exception) {
             _cancelOrder.value = Resource.Failure(e)
         }
+    }
+
+    fun updateProductStock(cartItems: List<CartItemModel>) = viewModelScope.launch {
+        updateProductStockUseCase(cartItems)
     }
 }
