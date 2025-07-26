@@ -146,7 +146,8 @@ fun CartPage(
                                 onDelete = {
                                     viewModel.removeFromCart(userId, item.productId, item.size)
                                 },
-                                product = product
+                                product = product,
+                                navController = navController
                             )
                         }
                     }

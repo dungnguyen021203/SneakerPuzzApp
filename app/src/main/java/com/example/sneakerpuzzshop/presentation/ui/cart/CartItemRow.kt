@@ -1,5 +1,6 @@
 package com.example.sneakerpuzzshop.presentation.ui.cart
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -30,10 +31,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sneakerpuzzshop.domain.model.CartItemModel
 import com.example.sneakerpuzzshop.domain.model.ProductModel
 import com.example.sneakerpuzzshop.utils.others.formatCurrency
+import com.example.sneakerpuzzshop.utils.ui.ROUTE_PRODUCTS_DETAILS
 
 @Composable
 fun CartItemRow(
@@ -41,12 +44,15 @@ fun CartItemRow(
     onAdd: () -> Unit,
     onRemove: () -> Unit,
     onDelete: () -> Unit,
-    product: ProductModel?
+    product: ProductModel?,
+    navController: NavHostController
 ) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth().clickable {
+                navController.navigate(ROUTE_PRODUCTS_DETAILS + product?.id)
+            },
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
