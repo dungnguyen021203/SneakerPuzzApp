@@ -59,7 +59,7 @@ fun HeaderView(modifier: Modifier = Modifier, viewModel: AuthViewModel = hiltVie
                 colors = CardDefaults.cardColors(Color.White)
             ) {
                 AsyncImage(
-                    model = user?.avatar ?: painterResource(id = R.drawable.pro5),
+                    model = user?.avatar,
                     contentDescription = "Avatar",
                     modifier = Modifier
                         .size(40.dp)
