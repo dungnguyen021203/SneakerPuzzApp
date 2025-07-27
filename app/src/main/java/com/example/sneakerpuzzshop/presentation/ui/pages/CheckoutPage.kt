@@ -7,22 +7,26 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -53,6 +58,7 @@ import com.example.sneakerpuzzshop.utils.others.formatCurrency
 import com.example.sneakerpuzzshop.utils.others.startPayment
 import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ContextCastToActivity")
 @Composable
 fun CheckoutPage(
@@ -131,158 +137,176 @@ fun CheckoutPage(
                         }
                     )
                 }
-
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues()),
-                    contentPadding = PaddingValues(bottom = 32.dp)
-                ) {
-                    // Card
-                    items(cartList) { cart ->
-                        val product = productMap[cart.productId]
-                        CheckoutProductCard(product = product, cart = cart, userId = userId)
-                    }
-
-                    // Promo Code
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 10.dp, vertical = 12.dp)
-                                .height(60.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = Color(0xFFE0E0E0),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .background(Color.White, shape = RoundedCornerShape(12.dp)),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            TextField(
-                                value = promoCode,
-                                onValueChange = { promoCode = it },
-                                placeholder = {
-                                    Text(
-                                        text = "Have a promo code? Enter here",
-                                        fontSize = 14.sp
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(text = "Check out", fontWeight = FontWeight.Bold)
+                            },
+                            navigationIcon = {
+                                IconButton(onClick = {
+                                    navController.popBackStack()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back"
                                     )
-                                },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(start = 8.dp),
-                                colors = TextFieldDefaults.colors(
-                                    focusedIndicatorColor = Color.Transparent,
-                                    unfocusedIndicatorColor = Color.Transparent,
-                                    disabledIndicatorColor = Color.Transparent,
-                                    focusedContainerColor = Color.Transparent,
-                                    unfocusedContainerColor = Color.Transparent,
-                                    disabledContainerColor = Color.Transparent
-                                ),
-                                singleLine = true,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-
-                            Button(
-                                onClick = {
-                                    if (promoCode.trim()
-                                            .equals("FREESHIPPING", ignoreCase = true)
-                                    ) {
-                                        shippingFeeOverride = 0.0
-                                        showToast(
-                                            context = context,
-                                            message = "Coupon applied successfully"
-                                        )
-                                    } else {
-                                        showToast(context = context, message = "Invalid coupon")
-                                    }
-                                    keyboardController?.hide()
-                                    focusManager.clearFocus()
-                                },
-                                enabled = promoCode.isNotEmpty(),
-                                modifier = Modifier
-                                    .padding(end = 8.dp)
-                                    .height(48.dp),
-                                shape = RoundedCornerShape(8.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = if (promoCode.isEmpty()) Color(0xFFF1F1F1) else Color(
-                                        0xFF1A50FF
-                                    ),
-                                    contentColor = if (promoCode.isEmpty()) Color.Gray else Color.White
-                                )
-                            ) {
-                                Text("Apply")
+                                }
                             }
-                        }
-                    }
-
-                    // User Info
-                    item {
-                        CheckoutBottom(
-                            userName = user?.name,
-                            userPhoneNumber = user?.phoneNumber,
-                            userAddress = user?.address,
-                            billingResult = billingState,
-                            navController = navController
                         )
                     }
+                ) { innerPadding ->
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding),
+                        contentPadding = PaddingValues(bottom = 32.dp)
+                    ) {
+                        // Card
+                        items(cartList) { cart ->
+                            val product = productMap[cart.productId]
+                            CheckoutProductCard(product = product, cart = cart, userId = userId)
+                        }
 
-                    // Checkout Button
-                    item {
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Button(
-                            enabled = (user?.phoneNumber?.isEmpty() == false || user?.address?.isEmpty() == false),
-                            onClick = {
-                                startPayment(
-                                    activity = activity,
-                                    amount = billingState.total.toInt().toString(),
-                                ) { result ->
-                                    when (result) {
-                                        is PaymentResult.Canceled -> showToast(
-                                            activity,
-                                            "Đã hủy thanh toán"
+                        // Promo Code
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 10.dp, vertical = 12.dp)
+                                    .height(60.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = Color(0xFFE0E0E0),
+                                        shape = RoundedCornerShape(12.dp)
+                                    )
+                                    .background(Color.White, shape = RoundedCornerShape(12.dp)),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                TextField(
+                                    value = promoCode,
+                                    onValueChange = { promoCode = it },
+                                    placeholder = {
+                                        Text(
+                                            text = "Have a promo code? Enter here",
+                                            fontSize = 14.sp
                                         )
+                                    },
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .padding(start = 8.dp),
+                                    colors = TextFieldDefaults.colors(
+                                        focusedIndicatorColor = Color.Transparent,
+                                        unfocusedIndicatorColor = Color.Transparent,
+                                        disabledIndicatorColor = Color.Transparent,
+                                        focusedContainerColor = Color.Transparent,
+                                        unfocusedContainerColor = Color.Transparent,
+                                        disabledContainerColor = Color.Transparent
+                                    ),
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
 
-                                        is PaymentResult.Error -> showToast(
-                                            activity,
-                                            "Có lỗi xảy ra"
-                                        )
-
-                                        is PaymentResult.Success -> {
-                                            showToast(activity, "Thanh toán thành công")
-                                            hasNavigatedToTYPage = true
-                                            orderViewModel.addToOrder(
-                                                userId = userId,
-                                                userPhoneNumber = user?.phoneNumber,
-                                                userName = user?.name,
-                                                userAddress = user?.address,
-                                                cartItem = cartList,
-                                                billingResult = billingState
+                                Button(
+                                    onClick = {
+                                        if (promoCode.trim()
+                                                .equals("FREESHIPPING", ignoreCase = true)
+                                        ) {
+                                            shippingFeeOverride = 0.0
+                                            showToast(
+                                                context = context,
+                                                message = "Coupon applied successfully"
                                             )
-                                            cartViewModel.clearCart(userId)
-                                            orderViewModel.updateProductStock(cartList)
-                                            navController.navigate("thank_you") {
-                                                popUpTo("checkout") { inclusive = true }
+                                        } else {
+                                            showToast(context = context, message = "Invalid coupon")
+                                        }
+                                        keyboardController?.hide()
+                                        focusManager.clearFocus()
+                                    },
+                                    enabled = promoCode.isNotEmpty(),
+                                    modifier = Modifier
+                                        .padding(end = 8.dp)
+                                        .height(48.dp),
+                                    shape = RoundedCornerShape(8.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = if (promoCode.isEmpty()) Color(0xFFF1F1F1) else Color(
+                                            0xFF1A50FF
+                                        ),
+                                        contentColor = if (promoCode.isEmpty()) Color.Gray else Color.White
+                                    )
+                                ) {
+                                    Text("Apply")
+                                }
+                            }
+                        }
+
+                        // User Info
+                        item {
+                            CheckoutBottom(
+                                userName = user?.name,
+                                userPhoneNumber = user?.phoneNumber,
+                                userAddress = user?.address,
+                                billingResult = billingState,
+                                navController = navController
+                            )
+                        }
+
+                        // Checkout Button
+                        item {
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Button(
+                                enabled = (user?.phoneNumber?.isEmpty() == false || user?.address?.isEmpty() == false),
+                                onClick = {
+                                    startPayment(
+                                        activity = activity,
+                                        amount = billingState.total.toInt().toString(),
+                                    ) { result ->
+                                        when (result) {
+                                            is PaymentResult.Canceled -> showToast(
+                                                activity,
+                                                "Đã hủy thanh toán"
+                                            )
+
+                                            is PaymentResult.Error -> showToast(
+                                                activity,
+                                                "Có lỗi xảy ra"
+                                            )
+
+                                            is PaymentResult.Success -> {
+                                                showToast(activity, "Thanh toán thành công")
+                                                hasNavigatedToTYPage = true
+                                                orderViewModel.addToOrder(
+                                                    userId = userId,
+                                                    userPhoneNumber = user?.phoneNumber,
+                                                    userName = user?.name,
+                                                    userAddress = user?.address,
+                                                    cartItem = cartList,
+                                                    billingResult = billingState
+                                                )
+                                                cartViewModel.clearCart(userId)
+                                                orderViewModel.updateProductStock(cartList)
+                                                navController.navigate("thank_you") {
+                                                    popUpTo("checkout") { inclusive = true }
+                                                }
                                             }
                                         }
                                     }
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .height(48.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF1A50FF),
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(text = "Checkout ${formatCurrency(billingState.total)}")
+                                },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF1A50FF),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(text = "Checkout ${formatCurrency(billingState.total)}")
+                            }
                         }
                     }
                 }
-
             }
         }
     }
