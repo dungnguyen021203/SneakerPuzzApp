@@ -83,20 +83,14 @@ fun CartPage(
                         bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 30.dp
                     )
                 ) {
-                    item {
-                        Text(
-                            text = "Your Cart",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
                     if (isEmpty) {
                         item {
                             Column(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(top = 100.dp),
+                                    .padding(
+                                    WindowInsets.systemBars.asPaddingValues()
+                                ),
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.Top
                             ) {
@@ -153,7 +147,7 @@ fun CartPage(
                     }
 
                     item {
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
                     }
 
                     item {
