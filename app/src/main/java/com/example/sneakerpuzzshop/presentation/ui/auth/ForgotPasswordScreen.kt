@@ -1,6 +1,7 @@
 package com.example.sneakerpuzzshop.presentation.ui.auth
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,6 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Email
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -53,20 +56,20 @@ fun ForgetPasswordScreen(viewModel: AuthViewModel, navController: NavHostControl
 
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         AuthHeader()
 
         Text(text = "Welcome to SneakerPuzz", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = "Enter your email. We got you!!!",
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium
         )
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         TextField(
             value = email,
@@ -95,20 +98,22 @@ fun ForgetPasswordScreen(viewModel: AuthViewModel, navController: NavHostControl
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Button(
             onClick = {
                 viewModel.resetPassword(email)
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 90.dp)
+                .padding(horizontal = 20.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1A50FF),
+                contentColor = Color.White
+            )
         ) {
             Text(text = "Reset Password", style = MaterialTheme.typography.titleMedium)
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             modifier = Modifier
@@ -121,7 +126,7 @@ fun ForgetPasswordScreen(viewModel: AuthViewModel, navController: NavHostControl
             text = "Back to Login",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.Gray
         )
     }
 
@@ -133,6 +138,7 @@ fun ForgetPasswordScreen(viewModel: AuthViewModel, navController: NavHostControl
                     viewModel.clearResetPasswordFlow()
                 }
             }
+
             Resource.Loading -> LoadingCircle()
             is Resource.Success -> {
                 LaunchedEffect(Unit) {

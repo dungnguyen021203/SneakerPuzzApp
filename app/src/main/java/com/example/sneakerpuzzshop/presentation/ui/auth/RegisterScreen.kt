@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Transparent
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -42,12 +43,18 @@ fun SignupScreen(viewModel: AuthViewModel?, navController: androidx.navigation.N
 
     val context = LocalContext.current
 
-    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         AuthHeader()
 
-        Text(text = "Become SneakerPuzz Member", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = "Become SneakerPuzz Member",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.ExtraBold
+        )
 
         TextField(
             value = email,
@@ -103,8 +110,6 @@ fun SignupScreen(viewModel: AuthViewModel?, navController: androidx.navigation.N
             )
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
-
         TextField(
             value = password,
             onValueChange = {
@@ -130,7 +135,9 @@ fun SignupScreen(viewModel: AuthViewModel?, navController: androidx.navigation.N
                 Icon(
                     painter = image,
                     contentDescription = "Password Trailing Icon",
-                    modifier = Modifier.size(24.dp).clickable { passwordVisible = !passwordVisible })
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { passwordVisible = !passwordVisible })
             },
             shape = RoundedCornerShape(8.dp),
             modifier = Modifier
@@ -142,18 +149,22 @@ fun SignupScreen(viewModel: AuthViewModel?, navController: androidx.navigation.N
             )
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
         Button(
             onClick = {
                 viewModel?.signUp(email, name, password)
             },
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 90.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF1A50FF),
+                contentColor = Color.White
+            )
         ) {
             Text(text = "Sign Up", style = MaterialTheme.typography.titleMedium)
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             modifier = Modifier
@@ -163,23 +174,25 @@ fun SignupScreen(viewModel: AuthViewModel?, navController: androidx.navigation.N
                         launchSingleTop = true
                     }
                 },
-            text = "Already have an account",
+            text = "Already have an account?",
             style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurface
+            color = Color.Gray
         )
 
         authResource?.value?.let {
-            when(it) {
+            when (it) {
                 is Resource.Failure -> {
                     LaunchedEffect(it) {
                         showToast(context = context, message = it.exception.message.toString())
                         viewModel.clearSignUpFlow()
                     }
                 }
+
                 is Resource.Loading -> {
                     LoadingCircle()
                 }
+
                 is Resource.Success -> {
                     LaunchedEffect(Unit) {
                         navController.navigate(ROUTE_HOME) {
