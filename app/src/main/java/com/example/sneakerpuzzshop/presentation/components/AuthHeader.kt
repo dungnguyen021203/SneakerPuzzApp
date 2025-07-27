@@ -24,7 +24,7 @@ fun AuthHeader(modifier: Modifier = Modifier) {
     )
 
     LottieAnimation(
-        modifier = modifier.size(300.dp),
+        modifier = modifier.size(250.dp),
         composition = composition,
         progress = {progress}
     )
