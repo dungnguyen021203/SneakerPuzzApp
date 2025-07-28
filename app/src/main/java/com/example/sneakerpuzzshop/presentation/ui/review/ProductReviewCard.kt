@@ -40,6 +40,7 @@ import com.example.sneakerpuzzshop.utils.others.formatTimestamp
 @Composable
 fun ProductReviewCard(modifier: Modifier = Modifier, review: ReviewModel) {
     var expanded by remember { mutableStateOf(false) }
+    var expanded2 by remember { mutableStateOf(false) }
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
@@ -137,18 +138,18 @@ fun ProductReviewCard(modifier: Modifier = Modifier, review: ReviewModel) {
             Text(
                 text = review.response,
                 style = MaterialTheme.typography.bodySmall,
-                maxLines = if (expanded) Int.MAX_VALUE else 3,
+                maxLines = if (expanded2) Int.MAX_VALUE else 3,
                 overflow = TextOverflow.Ellipsis
             )
 
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = if (expanded) "Show less" else "Read more",
+                text = if (expanded2) "Show less" else "Read more",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Blue,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.clickable { expanded = !expanded }
+                modifier = Modifier.clickable { expanded2 = !expanded2 }
             )
         }
     }
