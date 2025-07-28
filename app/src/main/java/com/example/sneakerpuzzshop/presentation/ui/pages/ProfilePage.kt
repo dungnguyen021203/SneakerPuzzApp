@@ -109,7 +109,7 @@ fun ProfilePage(
                         bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 50.dp
                     ),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp)
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
 
                     item {
