@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -72,53 +73,55 @@ fun CartPage(
                 val cartList = (state as Resource.Success).data
                 val isEmpty = cartList.isEmpty()
 
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(WindowInsets.systemBars.asPaddingValues())
-                        .padding(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    contentPadding = PaddingValues(
-                        bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 30.dp
-                    )
-                ) {
-                    if (isEmpty) {
-                        item {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(
-                                    WindowInsets.systemBars.asPaddingValues()
-                                ),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Bottom
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ShoppingBag,
-                                    contentDescription = "Empty Cart",
-                                    tint = Color.LightGray,
-                                    modifier = Modifier.size(100.dp),
-                                )
-                                Text(
-                                    text = "Your Cart is Empty",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.padding(top = 16.dp)
-                                )
-                                Text(
-                                    text = "Looks like you haven’t added anything to your cart yet.",
-                                    fontSize = 16.sp,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp),
-                                    lineHeight = 20.sp
-                                )
-                            }
-                        }
-                    } else {
+                if (isEmpty) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(
+                                WindowInsets.systemBars.asPaddingValues()
+                            ),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingBag,
+                            contentDescription = "Empty Cart",
+                            tint = Color.LightGray,
+                            modifier = Modifier.size(100.dp),
+                        )
+                        Text(
+                            text = "Your Cart is Empty",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp)
+                        )
+                        Text(
+                            text = "Looks like you haven’t added anything to your cart yet.",
+                            fontSize = 16.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(horizontal = 32.dp, vertical = 8.dp),
+                            lineHeight = 20.sp,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+
+                } else {
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(WindowInsets.systemBars.asPaddingValues())
+                            .padding(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        contentPadding = PaddingValues(
+                            bottom = WindowInsets.navigationBars.asPaddingValues()
+                                .calculateBottomPadding() + 30.dp
+                        )
+                    ) {
                         items(cartList) { item ->
                             val product = productMap[item.productId]
 
-                            if(product != null) {
+                            if (product != null) {
                                 CartItemRow(
                                     item = item,
                                     onAdd = {
@@ -144,27 +147,25 @@ fun CartPage(
                                 )
                             }
                         }
-                    }
+                        item {
+                            Spacer(modifier = Modifier.height(5.dp))
+                        }
 
-                    item {
-                        Spacer(modifier = Modifier.height(5.dp))
-                    }
-
-                    item {
-                        Button(
-                            onClick = { navController.navigate(ROUTE_CHECKOUT) },
-                            enabled = !isEmpty,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .height(48.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF1A50FF),
-                                contentColor = Color.White
-                            )
-                        ) {
-                            Text(text = "Check Out", fontSize = 16.sp)
+                        item {
+                            Button(
+                                onClick = { navController.navigate(ROUTE_CHECKOUT) },
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp)
+                                    .height(48.dp),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color(0xFF1A50FF),
+                                    contentColor = Color.White
+                                )
+                            ) {
+                                Text(text = "Check Out", fontSize = 16.sp)
+                            }
                         }
                     }
                 }
