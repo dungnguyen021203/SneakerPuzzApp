@@ -97,7 +97,10 @@ fun CategoryProductsPage(
                     productList.filter { p ->
                         val price = p.actualPrice.toFloatOrNull() ?: 0f
                         val matchSize = selectedSizes.isEmpty() ||
-                                selectedSizes.any { size -> p.sizes.containsKey(size) }
+                                selectedSizes.any { size ->
+                                    val quantity = p.sizes[size]?.toInt() ?: 0
+                                    quantity > 0
+                                }
                         val matchPrice = price in selectedPriceRange
                         matchSize && matchPrice
                     }

@@ -192,7 +192,7 @@ fun ProductDetailsContent(
             Spacer(modifier = Modifier.height(5.dp))
 
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                product.sizes.keys.chunked(3).forEach { keysString ->
+                product.sizes.keys.sorted().chunked(3).forEach { keysString ->
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         modifier = Modifier.fillMaxWidth()
