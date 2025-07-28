@@ -44,15 +44,12 @@ fun CartItemRow(
     onAdd: () -> Unit,
     onRemove: () -> Unit,
     onDelete: () -> Unit,
-    product: ProductModel?,
-    navController: NavHostController
+    product: ProductModel
 ) {
     Card(
         modifier = Modifier
             .padding(10.dp)
-            .fillMaxWidth().clickable {
-                navController.navigate(ROUTE_PRODUCTS_DETAILS + product?.id)
-            },
+            .fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
@@ -65,7 +62,7 @@ fun CartItemRow(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             AsyncImage(
-                model = product?.images?.firstOrNull(),
+                model = product.images.firstOrNull(),
                 contentDescription = "Shoe Image",
                 modifier = Modifier
                     .size(120.dp)
@@ -78,7 +75,7 @@ fun CartItemRow(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
-                    text = "${product?.name}",
+                    text = product.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
                     maxLines = 1,
@@ -90,7 +87,7 @@ fun CartItemRow(
                     color = Color.Gray
                 )
                 Text(
-                    text = formatCurrency(product?.actualPrice),
+                    text = formatCurrency(product.actualPrice),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
@@ -124,7 +121,7 @@ fun CartItemRow(
                             containerColor = Color.White,
                             contentColor = Color.Black
                         ), elevation = ButtonDefaults.buttonElevation(8.dp),
-                        enabled = item.quantity < (product?.sizes?.get(item.size) ?: 0)
+                        enabled = item.quantity < (product.sizes.get(item.size) ?: 0)
                     ) {
                         Text("+", fontSize = 18.sp, fontWeight = FontWeight.Normal)
                     }

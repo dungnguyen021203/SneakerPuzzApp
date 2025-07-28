@@ -22,3 +22,15 @@ fun LoadingCircle(modifier: Modifier = Modifier) {
         )
     }
 }
+
+@Composable
+fun LoadingCircleWholePage(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator(
+        )
+    }
+}

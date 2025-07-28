@@ -13,6 +13,9 @@ import com.example.sneakerpuzzshop.domain.usecase.ProductDetailsUseCase
 import com.example.sneakerpuzzshop.domain.usecase.RemoveFromCartUseCase
 import com.example.sneakerpuzzshop.domain.usecase.UpdateCartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -42,12 +45,19 @@ class CartViewModel @Inject constructor(
                 _cart.value = cartItem
 
                 if (cartItem is Resource.Success) {
-                    val productMap = mutableMapOf<String, ProductModel>()
-                    for (item in cartItem.data) {
-                        val result = productDetailsUseCase(item.productId)
-                        if (result is Resource.Success) {
-                            productMap[item.productId] = result.data
-                        }
+                    val productMap = coroutineScope {
+                        cartItem.data.map { item ->
+                            async {
+                                val result = productDetailsUseCase(item.productId)
+                                if (result is Resource.Success) {
+                                    item.productId to result.data
+                                } else {
+                                    null
+                                }
+                            }
+                        }.awaitAll()
+                            .filterNotNull()
+                            .toMap()
                     }
                     _productDetailsMap.value = productMap
                 }
@@ -133,12 +143,17 @@ class CartViewModel @Inject constructor(
 
     fun getProductFromOrder(orderItems: List<CartItemModel>) {
         viewModelScope.launch {
-            val productMap = mutableMapOf<String, ProductModel>()
-            for (item in orderItems) {
-                val result = productDetailsUseCase(item.productId)
-                if (result is Resource.Success) {
-                    productMap[item.productId] = result.data
-                }
+            val productMap = coroutineScope {
+                orderItems.map { item ->
+                    async {
+                        val result = productDetailsUseCase(item.productId)
+                        if (result is Resource.Success) {
+                            item.productId to result.data
+                        } else {
+                            null
+                        }
+                    }
+                }.awaitAll().filterNotNull().toMap()
             }
             _productDetailsMap.value = productMap
         }

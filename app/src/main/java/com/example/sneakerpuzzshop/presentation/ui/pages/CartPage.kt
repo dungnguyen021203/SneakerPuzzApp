@@ -40,7 +40,7 @@ import com.example.sneakerpuzzshop.presentation.components.showToast
 import com.example.sneakerpuzzshop.presentation.ui.cart.CartItemRow
 import com.example.sneakerpuzzshop.presentation.viewmodel.AuthViewModel
 import com.example.sneakerpuzzshop.presentation.viewmodel.CartViewModel
-import com.example.sneakerpuzzshop.utils.ui.LoadingCircle
+import com.example.sneakerpuzzshop.utils.ui.LoadingCircleWholePage
 import com.example.sneakerpuzzshop.utils.ui.ROUTE_CHECKOUT
 
 @Composable
@@ -58,7 +58,6 @@ fun CartPage(
     LaunchedEffect(userId) {
         viewModel.getCartFromUser(userId)
     }
-
     state.let {
         when (it) {
             is Resource.Failure -> {
@@ -67,7 +66,7 @@ fun CartPage(
                 }
             }
 
-            is Resource.Loading -> LoadingCircle()
+            is Resource.Loading -> LoadingCircleWholePage()
 
             is Resource.Success -> {
                 val cartList = (state as Resource.Success).data
@@ -87,12 +86,12 @@ fun CartPage(
                         item {
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
+                                    .fillMaxSize()
                                     .padding(
                                     WindowInsets.systemBars.asPaddingValues()
                                 ),
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Top
+                                verticalArrangement = Arrangement.Bottom
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.ShoppingBag,
@@ -119,30 +118,31 @@ fun CartPage(
                         items(cartList) { item ->
                             val product = productMap[item.productId]
 
-                            CartItemRow(
-                                item = item,
-                                onAdd = {
-                                    viewModel.updateCart(
-                                        userId,
-                                        item.productId,
-                                        item.size,
-                                        item.quantity + 1
-                                    )
-                                },
-                                onRemove = {
-                                    viewModel.updateCart(
-                                        userId,
-                                        item.productId,
-                                        item.size,
-                                        item.quantity - 1
-                                    )
-                                },
-                                onDelete = {
-                                    viewModel.removeFromCart(userId, item.productId, item.size)
-                                },
-                                product = product,
-                                navController = navController
-                            )
+                            if(product != null) {
+                                CartItemRow(
+                                    item = item,
+                                    onAdd = {
+                                        viewModel.updateCart(
+                                            userId,
+                                            item.productId,
+                                            item.size,
+                                            item.quantity + 1
+                                        )
+                                    },
+                                    onRemove = {
+                                        viewModel.updateCart(
+                                            userId,
+                                            item.productId,
+                                            item.size,
+                                            item.quantity - 1
+                                        )
+                                    },
+                                    onDelete = {
+                                        viewModel.removeFromCart(userId, item.productId, item.size)
+                                    },
+                                    product = product
+                                )
+                            }
                         }
                     }
 
