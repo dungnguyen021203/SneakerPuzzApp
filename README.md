@@ -1,5 +1,5 @@
 # SneakerPuzz Shop — Android E-commerce App
-SneakerPuzz Shop is an e-commerce app for Android, built with Jetpack Compose and using Firebase as the backend. The app supports Google login, product browsing, shopping cart, checkout, favorites, search and more.
+SneakerPuzz Shop is an e-commerce app for Android, built with Jetpack Compose and using Firebase as the backend. The app supports Google login, product browsing, shopping cart, checkout, favorites, search and more. (client-side only)
 # 📱Screenshots
 <img src="screenshots/Login.jpg" alt="Login" height="400"/>  <img src="screenshots/Login2.jpg" alt="Login" height="400"/>  <img src="screenshots/Login3.jpg" alt="Login" height="400"/>  <img src="screenshots/Login4.jpg" alt="Login" height="400"/>
 <img src="screenshots/Home.jpg" alt="Login" height="400"/>  <img src="screenshots/Favorite.jpg" alt="Login" height="400"/>  <img src="screenshots/CategoryProduct.jpg" alt="Login" height="400"/> 
