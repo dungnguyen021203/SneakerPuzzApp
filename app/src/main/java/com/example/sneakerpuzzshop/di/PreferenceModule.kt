@@ -1,7 +1,6 @@
 package com.example.sneakerpuzzshop.di
 
 import android.content.Context
-import com.example.sneakerpuzzshop.data.datastore.PreferenceManager
 import com.example.sneakerpuzzshop.data.datastore.SettingsManager
 import dagger.Module
 import dagger.Provides
@@ -13,14 +12,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object PreferenceModule {
-
-    @Provides
-    @Singleton
-    fun providePreferenceManager(
-        @ApplicationContext context: Context
-    ): PreferenceManager {
-        return PreferenceManager(context)
-    }
 
     @Provides
     @Singleton

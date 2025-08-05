@@ -18,12 +18,12 @@ class SettingsManager @Inject constructor(
         private val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
     }
 
-    val darkModeFlow: Flow<Boolean> = context.dataStore.data.map { prefs ->
+    val darkModeFlow: Flow<Boolean> = context.settingsDataStore.data.map { prefs ->
         prefs[IS_DARK_MODE] == true
     }
 
     suspend fun setDarkMode(isDarK: Boolean) {
-        context.dataStore.edit { prefs ->
+        context.settingsDataStore.edit { prefs ->
             prefs[IS_DARK_MODE] = isDarK
         }
     }
